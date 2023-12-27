@@ -1,0 +1,200 @@
+﻿<Window x:Class="AFSM.StartMenu"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AFSM"
+        mc:Ignorable="d"
+        Title="Start menu" Width="520" Height="528" Left="0" Name="Menu" DataContext="{Binding ElementName=Menu}"
+		AllowsTransparency="True" WindowStyle="None" Visibility="Visible" 
+		ShowInTaskbar="False" Activated="Window_Activated" Deactivated="Menu_Deactivated" FontFamily="Segoe UI" Topmost="True" BorderThickness="1">
+    <Window.Background>
+        <SolidColorBrush Color="#180053"/>
+    </Window.Background>
+    <Window.BorderBrush>
+        <SolidColorBrush Color="Black" Opacity="20"/>
+    </Window.BorderBrush>
+    <Window.Resources>
+        <ResourceDictionary>
+            <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+            <local:InvertBooleanConverter x:Key="InvertBool"/>
+            <local:ValueConverterGroup x:Key="InvertAndVisibilitate">
+                <local:InvertBooleanConverter/>
+                <BooleanToVisibilityConverter/>
+            </local:ValueConverterGroup>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="StartButtonStyle.xaml"/>
+                <ResourceDictionary Source="ToggleButtonStyle.xaml"/>
+                <ResourceDictionary Source="ToolTipStyle.xaml"/>
+                <ResourceDictionary Source="ContextMenuStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="245"/>
+            <ColumnDefinition Width="275"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+        </Grid.RowDefinitions>
+        <Grid Margin="7">
+            <Grid>
+                <Grid x:Name="GridPrograms" Margin="0,0,0,81" >
+                    <ScrollViewer Name="ProgramsListScroll" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"  Grid.Row="0" Grid.Column="1" Margin="5,0,0,0">
+                        <ItemsControl Name="ProgramsList" HorizontalContentAlignment="Stretch" BorderThickness="0" ItemsSource="{Binding Programs}" Background="Transparent" >
+                            <ItemsControl.Resources>
+                                <DataTemplate x:Name="listViewData" DataType="{x:Type local:StartMenuLink}">
+                                    <StackPanel Orientation="Horizontal" Height="30" MouseLeftButtonDown="Link_Click" OverridesDefaultStyle="True">
+                                        <StackPanel.ContextMenu>
+                                            <ContextMenu>
+                                                <MenuItem Header="Open" Click="Link_Click"/>
+                                                <MenuItem Header="Open file location..." Click="BrowseLink_Click"/>
+                                            </ContextMenu>
+                                        </StackPanel.ContextMenu>
+                                        <Image Source="{Binding Icon}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="16" Height="16" Margin="0,0,5,0"/>
+                                        <TextBlock Text="{Binding Title}" Foreground="White" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </DataTemplate>
+                                <DataTemplate  x:Name="listViewAttr" DataType="{x:Type local:StartMenuDirectory}">
+                                    <StackPanel HorizontalAlignment="Stretch" Background="Transparent">
+                                        <ToggleButton Name="collapse" IsChecked="False" Height="30" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" BorderThickness="0" HorizontalAlignment="Stretch">
+                                            <ToggleButton.ContextMenu>
+                                                <ContextMenu>
+                                                    <MenuItem Header="Open" Click="Link_Click"/>
+                                                </ContextMenu>
+                                            </ToggleButton.ContextMenu>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="20"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="30"/>
+                                                    <ColumnDefinition Width="10"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Image Grid.Column="0" Source="{Binding Icon}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="16" Height="16" Margin="0,0,5,0"/>
+                                                <TextBlock Grid.Column="1" Text="{Binding Title}" Foreground="White" VerticalAlignment="Center" TextAlignment="Left"/>
+                                            </Grid>
+                                        </ToggleButton>
+                                        <ItemsControl Margin="10,0,0,0" Visibility="{Binding IsChecked, ElementName=collapse, Converter={StaticResource BoolToVis}}" ItemTemplate="{DynamicResource listViewAttr}" ItemsSource="{Binding Path=Directories}" Background="Transparent" HorizontalAlignment="Stretch"  BorderThickness="0">
+                                            <ItemsControl.Template>
+                                                <ControlTemplate>
+                                                    <ItemsPresenter></ItemsPresenter>
+                                                </ControlTemplate>
+                                            </ItemsControl.Template>
+                                        </ItemsControl>
+                                        <ItemsControl Margin="10,0,0,0" Visibility="{Binding IsChecked, ElementName=collapse, Converter={StaticResource BoolToVis}}" ItemTemplate="{DynamicResource listViewData}" ItemsSource="{Binding Path=Links}"  Background="Transparent" HorizontalAlignment="Stretch"  BorderThickness="0">
+                                            <ItemsControl.Template>
+                                                <ControlTemplate>
+                                                    <ItemsPresenter></ItemsPresenter>
+                                                </ControlTemplate>
+                                            </ItemsControl.Template>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.Resources>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Grid>
+                <Grid x:Name="GridTogglable" Margin="0,0,0,81" >
+                    <Grid x:Name="DesktopStartHeaderPane" VerticalAlignment="Top" Height="30">
+                        <Button Grid.Row="0" Click="PowerButton_Click" Name="PowerButton" Foreground="White" TextOptions.TextHintingMode="Fixed" FontWeight="Medium" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" Width="30" Height="30" Margin="200,0,0,0">
+                            <Image x:Name="PowerGlyph" Source="pack://siteoforigin:,,,/Resources/powerglyph.png" Width="14"></Image>
+                        </Button>
+                        <Button Grid.Row="0" Click="Folder_Click" Name="UserImageButton" Width="100" HorizontalAlignment="Left">
+                            <Grid>
+                                <TextBlock x:Name="UserNameText" Text="UserName" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="30,0,0,2" FontSize="15"></TextBlock>
+                                <Border x:Name="UserImgBorder" CornerRadius="50" Width="26" HorizontalAlignment="Left" Height="26">
+                                    <Image Grid.Column="0" Name="UserImage" Width="26" Height="26"/>
+                                </Border>
+                            </Grid>
+                        </Button>
+                    </Grid>
+                    <Grid Background="#FF53417F" Height="1" VerticalAlignment="Top" Margin="0,35,0,0"></Grid>
+                    <ItemsControl x:Name="PinnedItems" Margin="0,38,0,80" Height="163" VerticalAlignment="Top">
+                        <ItemsControl.Resources>
+                            <DataTemplate x:Name="listViewDataPinned" DataType="{x:Type local:StartMenuLink}">
+                                <StackPanel Orientation="Horizontal" Height="40" MouseLeftButtonDown="Link_Click">
+                                    <StackPanel.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Open" Click="Link_Click"/>
+                                            <MenuItem Header="Open file location..." Click="BrowseLink_Click"/>
+                                        </ContextMenu>
+                                    </StackPanel.ContextMenu>
+                                    <Image Source="{Binding Icon}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="32" Height="32" Margin="0,0,5,0"/>
+                                    <TextBlock Text="{Binding Title}" Foreground="White" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </DataTemplate>
+                            <DataTemplate  x:Name="listViewAttrPinned" DataType="{x:Type local:StartMenuDirectory}">
+                                <StackPanel HorizontalAlignment="Stretch" Background="Transparent">
+                                    <ToggleButton Name="collapse" IsChecked="False" Height="40" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" BorderThickness="0" HorizontalAlignment="Stretch">
+                                        <ToggleButton.ContextMenu>
+                                            <ContextMenu>
+                                                <MenuItem Header="Open" Click="Link_Click"/>
+                                            </ContextMenu>
+                                        </ToggleButton.ContextMenu>
+                                        <Grid Height="40">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="20"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="30"/>
+                                                <ColumnDefinition Width="10"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Image Grid.Column="0" Source="{Binding Icon}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="32" Height="32" Margin="0,0,5,0"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding Title}" Foreground="White" VerticalAlignment="Center" TextAlignment="Left"/>
+                                            <Path x:Name="OpenArrow" Grid.Column="2" Fill="White" Data="M 0 6 L 12 6 L 6 0 Z" HorizontalAlignment="Right" VerticalAlignment="Center" Visibility="{Binding IsChecked, ElementName=collapse, Converter={StaticResource BoolToVis}}"/>
+                                            <Path Grid.Column="2" Fill="White" Data="M 0 0 L 6 6 L 12 0 Z" HorizontalAlignment="Right" VerticalAlignment="Center" Visibility="{Binding IsVisible, ElementName=OpenArrow, Converter={StaticResource InvertAndVisibilitate}}"/>
+                                        </Grid>
+                                    </ToggleButton>
+                                    <ItemsControl Margin="10,0,0,0" Visibility="{Binding IsChecked, ElementName=collapse, Converter={StaticResource BoolToVis}}" ItemTemplate="{DynamicResource listViewAttr}" ItemsSource="{Binding Path=Directories}" Background="Transparent" HorizontalAlignment="Stretch"  BorderThickness="0">
+                                        <ItemsControl.Template>
+                                            <ControlTemplate>
+                                                <ItemsPresenter></ItemsPresenter>
+                                            </ControlTemplate>
+                                        </ItemsControl.Template>
+                                    </ItemsControl>
+                                    <ItemsControl Margin="10,0,0,0" Visibility="{Binding IsChecked, ElementName=collapse, Converter={StaticResource BoolToVis}}" ItemTemplate="{DynamicResource listViewData}" ItemsSource="{Binding Path=Links}"  Background="Transparent" HorizontalAlignment="Stretch"  BorderThickness="0">
+                                        <ItemsControl.Template>
+                                            <ControlTemplate>
+                                                <ItemsPresenter></ItemsPresenter>
+                                            </ControlTemplate>
+                                        </ItemsControl.Template>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.Resources>
+                    </ItemsControl>
+                    <Grid Background="#FF53417F" Height="1" VerticalAlignment="Top" Margin="0,205,0,0"></Grid>
+                    <ItemsControl x:Name="RecentItems" Margin="0,38,0,4" VerticalAlignment="Bottom" Height="217"/>
+                </Grid>
+
+
+                <ToggleButton x:Name="AppsToggle" Height="34" VerticalAlignment="Bottom" Margin="0,0,0,40" Checked="HandleCheck" Unchecked="HandleUnchecked">
+                    <Grid>
+                        <TextBlock Name="ToggleButtonText" Text="All Apps" Foreground="White" Height="16" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="40,0,0,0"/>
+                        <TextBlock Name="ToggleButtonGlyph" Text="" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,0,0,0" FontFamily="Segoe UI Symbol" FontSize="16"/>
+                    </Grid>
+                </ToggleButton>
+                <Grid Background="White" VerticalAlignment="Bottom" Height="34">
+                    <Image x:Name="SearchGlyph" Source="pack://siteoforigin:,,,/Resources/SearchBoxGlyph.png" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" Height="34" Width="12" />
+                    <Border BorderThickness="1">
+                        <Border.BorderBrush>
+                            <SolidColorBrush Color="Black" Opacity="20"/>
+                        </Border.BorderBrush>
+                    </Border>
+                    <TextBlock  HorizontalAlignment="Stretch" Text="Search everywhere" VerticalAlignment="Center" Margin="21,0,0,0"
+						Visibility="{Binding ElementName=SearchText, Path=Text.IsEmpty, Converter={StaticResource BoolToVis}}">
+                        <TextBlock.Foreground>
+                            <SolidColorBrush Color="Black" Opacity="0.7"></SolidColorBrush>
+                        </TextBlock.Foreground>
+                    </TextBlock>
+                    <TextBox Name="SearchText"  HorizontalAlignment="Stretch" TextChanged="TextBox_TextChanged" VerticalContentAlignment="Center" Background="Transparent" BorderThickness="0">
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Return" 
+								Command="{Binding Run}"
+								CommandParameter="{Binding ElementName=SearchText, Path=Text}"/>
+                        </TextBox.InputBindings>
+                    </TextBox>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
