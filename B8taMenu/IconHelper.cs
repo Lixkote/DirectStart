@@ -13,7 +13,7 @@ using System.Xml.Linq;
 using System.Text;
 using System.Drawing.Drawing2D;
 
-namespace AFSM
+namespace B8TAM
 {
 	internal static class IconHelper
 	{
@@ -78,6 +78,37 @@ namespace AFSM
 			}
 			catch { return null; }
 		}
+
+		public static ImageSource GetLargeFileIcon(string file)
+		{
+			try
+			{
+				string extension = System.IO.Path.GetExtension(file);
+				if (!_exlcudedIcons.Contains(extension) && _iconCache.ContainsKey(extension))
+				{
+					return _iconCache[extension];
+				}
+
+				SHFILEINFO fileInfo = new SHFILEINFO();
+				IntPtr list = SHGetFileInfo(
+					file,
+					0,
+					ref fileInfo,
+					(uint)Marshal.SizeOf(fileInfo),
+					SHGFI_SYSICONINDEX);
+
+				var iconHandle = ImageList_GetIcon(list, fileInfo.iIcon, SHGFI_LARGEICON); // Use SHIL_EXTRALARGE flag (0x2) for 48px
+
+				using (Icon icn = System.Drawing.Icon.FromHandle(iconHandle))
+				{
+					var result = icn.ToBitmap().ToBitmapImage();
+					_iconCache[extension] = result;
+					return result;
+				}
+			}
+			catch { return null; }
+		}
+
 
 		[DllImport("shell32.dll", EntryPoint = "#261",
 			   CharSet = CharSet.Unicode, PreserveSig = false)]

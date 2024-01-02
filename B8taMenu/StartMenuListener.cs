@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
+using System.Windows.Input;
 
-namespace AFSM
+namespace B8TAM
 {
 	internal class StartMenuListener
 	{
@@ -52,6 +54,8 @@ namespace AFSM
 			}
 			return CallNextHookEx(_mouseHook, code, wParam, lParam);
 		}
+		HashSet<Keys> pressedKeys = new HashSet<Keys>();
+		Stopwatch stopwatch = new Stopwatch();
 		int KeyEvents(int code, IntPtr wParam, IntPtr lParam)
 		{
 			if (code < 0)
@@ -60,12 +64,26 @@ namespace AFSM
 			if (code == this.HC_ACTION)
 			{
 				KBDLLHOOKSTRUCT objKeyInfo = (KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(KBDLLHOOKSTRUCT));
-				if (wParam == (IntPtr)256 && (objKeyInfo.key == Keys.RWin || objKeyInfo.key == Keys.LWin))
+
+				if (wParam == (IntPtr)0x0100) // Key down
 				{
-					StartTriggered(this, null);
-					return 1;
+					pressedKeys.Add(objKeyInfo.key); // Add the key to the set of pressed keys
+
+				}
+				else if (wParam == (IntPtr)0x0101) // Key up
+				{
+
+					if (pressedKeys.Count == 1 && (objKeyInfo.key == Keys.LWin || objKeyInfo.key == Keys.RWin))
+					{
+						// Introduce a small delay (e.g., 100 milliseconds) to ensure the key is held for a minimum time
+
+						StartTriggered(this, null);
+						pressedKeys.Clear();
+						return 1;
+					}
 				}
 			}
+
 			return CallNextHookEx(_mouseHook, code, wParam, lParam);
 		}
 

@@ -9,7 +9,7 @@ using System;
 using System.Xml.Serialization;
 using System.Xml;
 
-namespace AFSM
+namespace B8TAM
 {
 	public static class ExtensionMethods
 	{

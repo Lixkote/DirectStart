@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
+using System.Management;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -15,12 +16,13 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Forms;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Xml;
 using System.Xml.Serialization;
+using Color = System.Windows.Media.Color;
 
-
-namespace AFSM
+namespace B8TAM
 {
 	/// <summary>
 	/// Interaction logic for StartMenu.xaml
@@ -30,9 +32,28 @@ namespace AFSM
 		StartMenuListener _listener;
 		ObservableCollection<StartMenuEntry> Programs = new ObservableCollection<StartMenuEntry>();
 		ObservableCollection<StartMenuEntry> Pinned = new ObservableCollection<StartMenuEntry>();
+		ObservableCollection<StartMenuEntry> Recent = new ObservableCollection<StartMenuEntry>();
 		ObservableCollection<StartMenuLink> Results = new ObservableCollection<StartMenuLink>();
+		ObservableCollection<Tile> Tiles = new ObservableCollection<Tile>();
+
+
 
 		public ICommand Run => new RunCommand(RunCommand);
+
+		private static Color GetColor(IntPtr pElementName)
+		{
+			var colourset = DUIColorHelper.GetImmersiveUserColorSetPreference(false, false);
+			uint type = DUIColorHelper.GetImmersiveColorTypeFromName(pElementName);
+			Marshal.FreeCoTaskMem(pElementName);
+			uint colourdword = DUIColorHelper.GetImmersiveColorFromColorSetEx((uint)colourset, type, false, 0);
+			byte[] colourbytes = new byte[4];
+			colourbytes[0] = (byte)((0xFF000000 & colourdword) >> 24); // A
+			colourbytes[1] = (byte)((0x00FF0000 & colourdword) >> 16); // B
+			colourbytes[2] = (byte)((0x0000FF00 & colourdword) >> 8); // G
+			colourbytes[3] = (byte)(0x000000FF & colourdword); // R
+			Color color = Color.FromArgb(colourbytes[0], colourbytes[3], colourbytes[2], colourbytes[1]);
+			return color;
+		}
 
 		public StartMenu()
 		{
@@ -53,22 +74,29 @@ namespace AFSM
 			InitializeComponent();
 
 			UserImageButton.Tag = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-			UserImage.Source = IconHelper.GetUserTile(Environment.UserName).ToBitmapImage();
+			userpfp.ImageSource = IconHelper.GetUserTile(Environment.UserName).ToBitmapImage();
 			PinnedItems.ItemsSource = Pinned;
 			ProgramsList.ItemsSource = Programs;
-			
-			// CollectionView startListView = (CollectionView)CollectionViewSource.GetDefaultView(ProgramsList.ItemsSource);
-			PropertyGroupDescription startGroupDesc = new PropertyGroupDescription("Alph");
-			// startListView.GroupDescriptions.Add(startGroupDesc);
-			
-			var desktopWorkingArea = SystemParameters.WorkArea;
-			Left = 0;
-			Top = desktopWorkingArea.Bottom - Height;
+			RecentApps.ItemsSource = GetFrequent.GetRecentlyUsedPrograms();
+
+            // CollectionView startListView = (CollectionView)CollectionViewSource.GetDefaultView(ProgramsList.ItemsSource);
+            PropertyGroupDescription startGroupDesc = new PropertyGroupDescription("Alph");
+            // startListView.GroupDescriptions.Add(startGroupDesc);
+
+            var desktopWorkingArea = SystemParameters.WorkArea;
+			base.Left = 0.0;
+			base.Top = SystemParameters.WorkArea.Bottom - base.Height;
 			_listener = new StartMenuListener();
 			_listener.StartTriggered += OnStartTriggered;
 			SearchGlyph.Source = Properties.Resources.SearchBoxGlyph.ToBitmapImage();
 			PowerGlyph.Source = Properties.Resources.powerglyph.ToBitmapImage();
 			UserNameText.Text = Environment.UserName;
+
+			// DUI Colors for the main start menu grid:
+			IntPtr pElementName = Marshal.StringToHGlobalUni(ImmersiveColors.ImmersiveStartBackground.ToString());
+            System.Windows.Media.Color color = GetColor(pElementName);
+			StartMenuBackground.Background = new SolidColorBrush(color);
+			LoadTiles();
 		}
 
 		private void PreparePinnedStartMenu() 
@@ -99,7 +127,14 @@ namespace AFSM
 			}
 		}
 
-		
+		public void LoadTiles()
+		{
+			TilesLoader TileAppHelper = new TilesLoader();
+			Tiles = new ObservableCollection<Tile>();
+			TileAppHelper.LoadTileGroups(Tiles);
+			TilesHost.ItemsSource = Tiles;
+		}
+
 		void OnStartTriggered(object sender, EventArgs e)
 		{
 			Visibility = Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
@@ -232,6 +267,17 @@ namespace AFSM
 			Link_Click(sender, null);
 		}
 
+		private void Tile_Click(object sender, RoutedEventArgs e)
+		{
+			Tile_Click(sender, null);
+		}
+		private void Tile_Click(object sender, MouseButtonEventArgs e)
+		{
+			Tile data = (sender as FrameworkElement).DataContext as Tile;
+			this.Hide();
+			Process.Start(data.Path);
+		}
+
 		private void BrowseLink_Click(object sender, RoutedEventArgs e)
 		{
 			StartMenuLink data = (sender as FrameworkElement).DataContext as StartMenuLink;
@@ -326,7 +372,9 @@ namespace AFSM
 
 		private void PowerButton_Click(object sender, RoutedEventArgs e)
 		{
-
+			PowerMenu.PlacementTarget = sender as UIElement;
+			PowerMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+			PowerMenu.IsOpen = true;
 		}
 		public void RunCommand(string command)
 		{
@@ -369,8 +417,45 @@ namespace AFSM
 		{
 			System.Windows.Forms.Application.SetSuspendState(PowerState.Hibernate, true, true);
 		}
-	}
-	public class RunCommand : ICommand
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+			this.Close();
+        }
+
+        private void UserImageButton_Click(object sender, RoutedEventArgs e)
+        {
+			UserMenu.PlacementTarget = sender as UIElement;
+			UserMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+			UserMenu.IsOpen = true;
+		}
+
+        private void sleepPC_Click(object sender, RoutedEventArgs e)
+        {
+			System.Windows.Forms.Application.SetSuspendState(PowerState.Suspend, true, true);
+		}
+
+		private void shutdownPC_Click(object sender, RoutedEventArgs e)
+        {
+			System.Diagnostics.Process.Start("shutdown.exe", "-s -t 0");
+		}
+
+		private void restartPC_Click(object sender, RoutedEventArgs e)
+        {
+			System.Diagnostics.Process.Start("shutdown.exe", "-r -t 0");
+		}
+
+		private void ExitDS_Click(object sender, RoutedEventArgs e)
+        {
+			this.Close();
+        }
+
+        private void Menu_Loaded(object sender, RoutedEventArgs e)
+        {
+			GridPrograms.Visibility = Visibility.Collapsed;
+		}
+    }
+    public class RunCommand : ICommand
 	{
 		public delegate void ExecuteMethod();
 		private Action<string> func;

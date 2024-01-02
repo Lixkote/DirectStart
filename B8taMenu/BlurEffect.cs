@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 
-namespace AFSM
+namespace B8TAM
 {
 	internal enum AccentState
 	{

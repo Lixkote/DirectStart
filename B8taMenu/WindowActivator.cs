@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace AFSM
+namespace B8TAM
 {
 	internal static class WindowActivator
 	{

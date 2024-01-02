@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 
-namespace AFSM
+namespace B8TAM
 {
 	[ValueConversion(typeof(bool), typeof(bool))]
 	public class InvertBooleanConverter : IValueConverter

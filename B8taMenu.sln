@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.34301.259
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThreStart", "AFSM\ThreStart.csproj", "{32045D6A-E356-43D5-9944-8959F60C3CB2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "B8taMenu", "B8taMenu\B8taMenu.csproj", "{32045D6A-E356-43D5-9944-8959F60C3CB2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
