@@ -32,12 +32,12 @@ namespace B8TAM
                             Path = tileElement.Element("Path")?.Value,
                             PathMetro = tileElement.Element("PathMetro")?.Value,
                             Size = tileElement.Element("Size")?.Value,
-                            Icon = IconHelper.GetLargeFileIcon(tileElement.Element("Path")?.Value),
+                            Icon = IconHelper.GetTileIcon((tileElement.Element("Path")?.Value)),
                             IsLiveTileEnabled = bool.Parse(tileElement.Element("IsLiveTileEnabled")?.Value ?? "false"),
 
-                            LeftGradient = TileColorFromIcon.CalculateLeftGradient(IconHelper.GetLargeFileIcon(tileElement.Element("Path")?.Value)),
-                            RightGradient = TileColorFromIcon.CalculateRightGradient(IconHelper.GetLargeFileIcon(tileElement.Element("Path")?.Value)),
-                            Border = TileColorFromIcon.CalculateBorder(IconHelper.GetLargeFileIcon(tileElement.Element("Path")?.Value)),
+                            LeftGradient = TileColorCalculator.CalculateLeftGradient(IconHelper.GetLargeFileIcon(tileElement.Element("Path")?.Value), Path.GetFileNameWithoutExtension(tileElement.Element("Path")?.Value)),
+                            RightGradient = TileColorCalculator.CalculateRightGradient(IconHelper.GetLargeFileIcon(tileElement.Element("Path")?.Value), Path.GetFileNameWithoutExtension(tileElement.Element("Path")?.Value)),
+                            Border = TileColorCalculator.CalculateBorder(IconHelper.GetLargeFileIcon(tileElement.Element("Path")?.Value), Path.GetFileNameWithoutExtension(tileElement.Element("Path")?.Value)),
                         };
 
                         tilesCollection.Add(tile);

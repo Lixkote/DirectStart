@@ -72,7 +72,7 @@
         <ItemsControl x:Name="TilesHost" Grid.Column="1" Margin="4,8,8,8">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Top"/>
+                    <WrapPanel VerticalAlignment="Top"/>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             <ItemsControl.Resources>

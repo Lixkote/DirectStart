@@ -33,7 +33,8 @@ namespace B8TAM
 
 		//Constants flags for SHGetFileInfo 
 		public const uint SHGFI_ICON = 0x100;
-		public const uint SHGFI_LARGEICON = 0x0; // 'Large icon
+		public const uint SHGFI_LARGEICONa = 0x000000000;
+		public const uint SHGFI_LARGEICON = 0x0; 
 		public const uint SHGFI_SYSICONINDEX = 0x000004000;
 		public const uint ILD_NORMAL = 0x0000;
 
@@ -107,6 +108,134 @@ namespace B8TAM
 				}
 			}
 			catch { return null; }
+		}
+
+		private static readonly string[] _excludedIcons = { ".lnk" }; // Example excluded extensions
+
+		[DllImport("shell32.dll")]
+		private static extern IntPtr SHGetImageList(int iImageList, ref Guid riid);
+
+		[DllImport("user32.dll", SetLastError = true)]
+		private static extern bool ImageList_GetIcon(IntPtr himl, int i, uint flags, ref IntPtr picon);
+
+
+		// Define the necessary SHGFI flags
+		private const int SHIL_LARGE = 0;
+
+		[StructLayout(LayoutKind.Sequential)]
+		private struct POINT
+		{
+			public int X;
+			public int Y;
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		private struct RECT
+		{
+			public int left;
+			public int top;
+			public int right;
+			public int bottom;
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		private struct IMAGELISTDRAWPARAMS
+		{
+			public int cbSize;
+			public IntPtr himl;
+			public int i;
+			public IntPtr hdcDst;
+			public int x;
+			public int y;
+			public int cx;
+			public int cy;
+			public int xBitmap; // x offest from the upperleft of bitmap
+			public int yBitmap; // y offset from the upperleft of bitmap
+			public int rgbBk;
+			public int rgbFg;
+			public int fStyle;
+			public int dwRop;
+			public int fState;
+			public int Frame;
+			public int crEffect;
+		}
+
+		[ComImport]
+		[Guid("46EB5926-582E-4017-9FDF-E8998DAA0950")]
+		[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+		private interface IImageList
+		{
+			[PreserveSig]
+			int Add(IntPtr hbmImage, IntPtr hbmMask, ref int pi);
+
+			[PreserveSig]
+			int ReplaceIcon(int i, IntPtr hicon, ref int pi);
+
+			[PreserveSig]
+			int SetOverlayImage(int iImage, int iOverlay);
+
+			[PreserveSig]
+			int Replace(int i, IntPtr hbmImage, IntPtr hbmMask);
+
+			[PreserveSig]
+			int AddMasked(IntPtr hbmImage, int crMask, ref int pi);
+
+			[PreserveSig]
+			int Draw(ref IMAGELISTDRAWPARAMS pimldp);
+
+			[PreserveSig]
+			int Remove(int i);
+
+			[PreserveSig]
+			int GetIcon(int i, int flags, ref IntPtr picon);
+		}
+
+
+		public static ImageSource GetTileIcon(string filePath)
+		{
+			try
+			{
+				string extension = System.IO.Path.GetExtension(filePath);
+				if (!_excludedIcons.Contains(extension) && _iconCache.ContainsKey(extension))
+				{
+					return _iconCache[extension];
+				}
+
+				SHFILEINFO fileInfo = new SHFILEINFO();
+				IntPtr hSysImgList = SHGetFileInfo(
+					filePath,
+					0,
+					ref fileInfo,
+					(uint)Marshal.SizeOf(fileInfo),
+					SHGFI_SYSICONINDEX | SHGFI_ICON);
+
+				// Obtain the system image list
+				IntPtr hImageList = IntPtr.Zero;
+				Guid iidImageList = typeof(IImageList).GUID;
+				SHGetImageList(SHIL_LARGE, ref iidImageList);
+
+				IntPtr hIcon = IntPtr.Zero;
+				ImageList_GetIcon(hImageList, fileInfo.iIcon, 0, ref hIcon);
+
+				using (Icon icon = Icon.FromHandle(hIcon))
+				{
+					ImageSource imageSource = Imaging.CreateBitmapSourceFromHIcon(
+						icon.Handle,
+						Int32Rect.Empty,
+						BitmapSizeOptions.FromWidthAndHeight(48, 48));
+
+					if (extension != null)
+						_iconCache[extension] = imageSource;
+
+					return imageSource;
+				}
+			}
+			catch (Exception ex)
+			{
+				// Handle exception if necessary
+				Console.WriteLine(ex.Message);
+				return null;
+			}
 		}
 
 

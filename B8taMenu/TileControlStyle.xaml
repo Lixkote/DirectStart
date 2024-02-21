@@ -43,7 +43,7 @@
                                 </StackPanel>
                                 <TextBlock Margin="14,0,0,4"
                                                 FontSize="12"
-                                                Style="{StaticResource GDIText}"
+                                                
                                                 FontFamily="Segoe UI"
                                                 HorizontalAlignment="{TemplateBinding HorizontalTitleAlignment}"
                                                 VerticalAlignment="{TemplateBinding VerticalTitleAlignment}"
@@ -109,14 +109,15 @@
                                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                             Orientation="Horizontal">
                                     <ContentPresenter RecognizesAccessKey="True" />
-                                    <Image Source="{Binding Icon, RelativeSource={RelativeSource TemplatedParent}}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,28" Width="48" Height="48"/>
+                                    <Image Source="{Binding Icon}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,28" Width="48" Height="48" Stretch="Fill">
+                                    </Image>
                                     <TextBlock VerticalAlignment="Center"
                                                FontSize="{TemplateBinding CountFontSize}"
                                                Text="{TemplateBinding Count}" />
                                 </StackPanel>
                                 <TextBlock Margin="14,0,0,4"
                                                 FontSize="12"
-                                                Style="{StaticResource GDIText}"
+                                                
                                                 FontFamily="Segoe UI"
                                                 HorizontalAlignment="{TemplateBinding HorizontalTitleAlignment}"
                                                 VerticalAlignment="{TemplateBinding VerticalTitleAlignment}"
