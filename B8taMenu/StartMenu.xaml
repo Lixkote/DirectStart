@@ -77,7 +77,7 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.Resources>
                 <DataTemplate DataType="{x:Type local:Tile}">
-                    <local:TileControl Click="Tile_Click" Style="{DynamicResource 8Tile}" Icon="{Binding Icon}" Title="{Binding Title}" Width="120" Height="120" FontSize="6" HorizontalAlignment="Left"></local:TileControl>
+                    <local:TileControl Click="Tile_Click" Style="{DynamicResource ColoredTile}" Icon="{Binding Icon}" Title="{Binding Title}" Width="120" Height="120" FontSize="6" HorizontalAlignment="Left"></local:TileControl>
                 </DataTemplate>
             </ItemsControl.Resources>
         </ItemsControl>
@@ -139,6 +139,11 @@
                     </ScrollViewer>
                 </Grid>
                 <Grid x:Name="GridTogglable" Margin="0,0,0,81" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="36"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
                     <Grid x:Name="DesktopStartHeaderPane" VerticalAlignment="Top" Height="30">
                         <ToggleButton Style="{DynamicResource MetroAnimatedToggleButton}" Grid.Row="0" Click="PowerButton_Click" x:Name="PowerButton" Foreground="White" TextOptions.TextHintingMode="Fixed" FontWeight="Medium" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" Width="30" Height="30" Margin="219,0,0,0">
                             <Image x:Name="PowerGlyph" Source="pack://siteoforigin:,,,/Resources/powerglyph.png" Width="14"/>
@@ -160,8 +165,8 @@
                                 </local:ImmesiveContextMenu>
                             </FrameworkElement.ContextMenu>
                             <Grid x:Name="grid">
-                                <TextBlock x:Name="UserNameText" Style="{StaticResource GDIText}" Text="User" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="30,0,0,2" FontSize="15" />
-                                <Border x:Name="UserImgBorder" CornerRadius="50" Width="26" Height="26" HorizontalAlignment="Left">
+                                <TextBlock x:Name="UserNameText" Style="{StaticResource GDIText}" Text="%USERNAME%" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="30,0,0,2" FontSize="15" />
+                                <Border x:Name="UserImgBorder" CornerRadius="0" Width="26" Height="26" HorizontalAlignment="Left">
                                     <Border.Background>
                                         <ImageBrush x:Name="userpfp" Stretch="Fill"/>
                                     </Border.Background>
@@ -170,7 +175,7 @@
                         </ToggleButton>
                     </Grid>
                     <Grid Background="#4CFFFFFF" Height="1" VerticalAlignment="Top" Margin="0,35,0,0"/>
-                    <ItemsControl x:Name="PinnedItems" Margin="0,38,0,80" Height="163" VerticalAlignment="Top">
+                    <ItemsControl BorderBrush="#4AFFFFFF" BorderThickness="0,0,0,1" x:Name="PinnedItems" Margin="0,2" VerticalAlignment="Top" Grid.Row="1">
                         <ItemsControl.Resources>
                             <DataTemplate x:Name="listViewDataPinned" DataType="{x:Type local:StartMenuLink}">
                                 <StackPanel Orientation="Horizontal" Height="40" MouseLeftButtonDown="Link_Click">
@@ -223,8 +228,7 @@
                             </DataTemplate>
                         </ItemsControl.Resources>
                     </ItemsControl>
-                    <Grid Background="#4AFFFFFF" Height="1" VerticalAlignment="Top" Margin="0,205,0,0"/>
-                    <ItemsControl x:Name="RecentApps" Margin="0,38,0,4" VerticalAlignment="Bottom" Height="217"/>
+                    <ItemsControl x:Name="RecentApps" Margin="0,0,0,4" VerticalAlignment="Bottom" Grid.Row="2"/>
                 </Grid>
 
 

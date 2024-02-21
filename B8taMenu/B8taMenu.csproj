@@ -90,6 +90,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Tile.cs" />
+    <Compile Include="TileColorFromIcon.cs" />
     <Compile Include="TileControl.cs" />
     <Compile Include="TilesLoader.cs" />
     <Compile Include="ValueConverters.cs" />

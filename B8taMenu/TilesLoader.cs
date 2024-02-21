@@ -34,6 +34,10 @@ namespace B8TAM
                             Size = tileElement.Element("Size")?.Value,
                             Icon = IconHelper.GetLargeFileIcon(tileElement.Element("Path")?.Value),
                             IsLiveTileEnabled = bool.Parse(tileElement.Element("IsLiveTileEnabled")?.Value ?? "false"),
+
+                            LeftGradient = TileColorFromIcon.CalculateLeftGradient(IconHelper.GetLargeFileIcon(tileElement.Element("Path")?.Value)),
+                            RightGradient = TileColorFromIcon.CalculateRightGradient(IconHelper.GetLargeFileIcon(tileElement.Element("Path")?.Value)),
+                            Border = TileColorFromIcon.CalculateBorder(IconHelper.GetLargeFileIcon(tileElement.Element("Path")?.Value)),
                         };
 
                         tilesCollection.Add(tile);
