@@ -150,6 +150,11 @@ namespace B8TAM
                 }
             }
             // If the average color has blue elements, prioritize teal
+            if (tilename.Contains("GitHub Desktop"))
+            {
+                return DefaultTileColors.Pink;
+            }
+            // If the average color has blue elements, prioritize teal
             if (tilename.Contains("winspy"))
             {
                 return DefaultTileColors.Purple;
@@ -165,7 +170,7 @@ namespace B8TAM
                 return DefaultTileColors.Blue;
             }
             // If the average color has blue elements, prioritize teal
-            if (tilename.Contains("Documents"))
+            if (tilename.Contains("Documents") || tilename.Contains("Command Prompt") || tilename.Contains("cmd"))
             {
                 return DefaultTileColors.Gray;
             }

@@ -3,6 +3,7 @@
     internal class Tile
     {
         public string Path { get; set; }
+        public string EXEPath { get; set; }
         public string LeftGradient { get; set; }
         public string RightGradient { get; set; }
         public string Border { get; set; }

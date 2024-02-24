@@ -195,40 +195,29 @@ namespace B8TAM
 		{
 			try
 			{
-				string extension = System.IO.Path.GetExtension(filePath);
-				if (!_excludedIcons.Contains(extension) && _iconCache.ContainsKey(extension))
-				{
+				string extension = Path.GetExtension(filePath);
+				if (string.IsNullOrEmpty(extension) || _excludedIcons.Contains(extension))
+					return null;
+
+				if (_iconCache.ContainsKey(extension))
 					return _iconCache[extension];
-				}
 
-				SHFILEINFO fileInfo = new SHFILEINFO();
-				IntPtr hSysImgList = SHGetFileInfo(
-					filePath,
-					0,
-					ref fileInfo,
-					(uint)Marshal.SizeOf(fileInfo),
-					SHGFI_SYSICONINDEX | SHGFI_ICON);
+				SHFILEINFO shinfo = new SHFILEINFO();
+				IntPtr hSysImgList = SHGetFileInfo(filePath, 0, ref shinfo, (uint)Marshal.SizeOf(shinfo), SHGFI_ICON | SHGFI_LARGEICON);
+				Icon icon = Icon.FromHandle(shinfo.hIcon);
 
-				// Obtain the system image list
-				IntPtr hImageList = IntPtr.Zero;
-				Guid iidImageList = typeof(IImageList).GUID;
-				SHGetImageList(SHIL_LARGE, ref iidImageList);
+				ImageSource imageSource = Imaging.CreateBitmapSourceFromHIcon(
+					icon.Handle,
+					Int32Rect.Empty,
+					BitmapSizeOptions.FromEmptyOptions());
 
-				IntPtr hIcon = IntPtr.Zero;
-				ImageList_GetIcon(hImageList, fileInfo.iIcon, 0, ref hIcon);
+				icon.Dispose();
+				DestroyIcon(shinfo.hIcon);
 
-				using (Icon icon = Icon.FromHandle(hIcon))
-				{
-					ImageSource imageSource = Imaging.CreateBitmapSourceFromHIcon(
-						icon.Handle,
-						Int32Rect.Empty,
-						BitmapSizeOptions.FromWidthAndHeight(48, 48));
+				if (extension != null)
+					_iconCache[extension] = imageSource;
 
-					if (extension != null)
-						_iconCache[extension] = imageSource;
-
-					return imageSource;
-				}
+				return imageSource;
 			}
 			catch (Exception ex)
 			{

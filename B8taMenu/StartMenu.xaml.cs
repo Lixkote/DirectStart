@@ -1,4 +1,7 @@
-﻿using System;
+﻿using B8TAM.FrequentHelpers;
+using Microsoft.Win32;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.OleDb;
 using System.Diagnostics;
@@ -30,12 +33,15 @@ namespace B8TAM
 	public partial class StartMenu : Window
 	{
 		StartMenuListener _listener;
+		FrequentAppsHelper frequentHelper;
 		ObservableCollection<StartMenuEntry> Programs = new ObservableCollection<StartMenuEntry>();
 		ObservableCollection<StartMenuEntry> Pinned = new ObservableCollection<StartMenuEntry>();
 		ObservableCollection<StartMenuEntry> Recent = new ObservableCollection<StartMenuEntry>();
 		ObservableCollection<StartMenuLink> Results = new ObservableCollection<StartMenuLink>();
 		ObservableCollection<Tile> Tiles = new ObservableCollection<Tile>();
-
+		public SourceType SelectedSourceType { get; set; }
+		private List<SourceType> sourceTypes;
+		private ObservableCollection<CountEntry> countEntries;
 
 
 		public ICommand Run => new RunCommand(RunCommand);
@@ -63,6 +69,15 @@ namespace B8TAM
 			programs = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.StartMenu), "Programs");
 			GetPrograms(programs);
 
+
+			this.sourceTypes = new List<SourceType>()
+			{
+				new SourceType("Program", @"Software\Microsoft\Windows\CurrentVersion\Explorer\UserAssist\{CEBFF5CD-ACE2-4F4F-9178-9926F41749EA}\Count"),
+				new SourceType("Shortcut", @"Software\Microsoft\Windows\CurrentVersion\Explorer\UserAssist\{F4E57C4B-2036-45F0-A9AB-443BCFE33D9F}\Count")
+			};
+			this.SelectedSourceType = sourceTypes[0];
+			GetFrequentsNew();
+
 			string pinned = Path.Combine(
 				Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
 				@"Microsoft\Internet Explorer\Quick Launch\User Pinned\StartMenu\");
@@ -77,7 +92,7 @@ namespace B8TAM
 			userpfp.ImageSource = IconHelper.GetUserTile(Environment.UserName).ToBitmapImage();
 			PinnedItems.ItemsSource = Pinned;
 			ProgramsList.ItemsSource = Programs;
-			RecentApps.ItemsSource = GetFrequent.GetRecentlyUsedPrograms();
+			RecentApps.ItemsSource = Recent;
 
             // CollectionView startListView = (CollectionView)CollectionViewSource.GetDefaultView(ProgramsList.ItemsSource);
             PropertyGroupDescription startGroupDesc = new PropertyGroupDescription("Alph");
@@ -85,7 +100,7 @@ namespace B8TAM
 
             var desktopWorkingArea = SystemParameters.WorkArea;
 			base.Left = 0.0;
-			base.Top = SystemParameters.WorkArea.Bottom - base.Height;
+			base.Top = SystemParameters.WorkArea.Bottom - base.Height + 40;
 			_listener = new StartMenuListener();
 			_listener.StartTriggered += OnStartTriggered;
 			SearchGlyph.Source = Properties.Resources.SearchBoxGlyph.ToBitmapImage();
@@ -96,8 +111,90 @@ namespace B8TAM
 			IntPtr pElementName = Marshal.StringToHGlobalUni(ImmersiveColors.ImmersiveStartBackground.ToString());
             System.Windows.Media.Color color = GetColor(pElementName);
 			StartMenuBackground.Background = new SolidColorBrush(color);
+			StartLogo.Background = new SolidColorBrush(color);
 			LoadTiles();
 		}
+
+		int maxfrequent = 5;
+		int startfrequent = 0;
+
+		private void GetFrequentsNew()
+		{
+			if (startfrequent <= maxfrequent)
+			{
+				try
+				{
+					RegistryKey reg = Registry.CurrentUser.OpenSubKey(SelectedSourceType.Key);
+					List<CountEntry> sortedEntries = new List<CountEntry>();
+
+					foreach (string valueName in reg.GetValueNames())
+					{
+						CountEntry entry = new CountEntry();
+						entry.Name = valueName;
+						entry.Value = (byte[])reg.GetValue(valueName);
+						entry.RegKey = reg.ToString();
+
+						if (File.Exists(entry.DecodedName) || Directory.Exists(entry.DecodedName))
+						{
+							sortedEntries.Add(entry);
+						}
+					}
+
+					// Sort the entries based on executionCount in descending order
+					sortedEntries.Sort((a, b) => b.ExecutionCount.CompareTo(a.ExecutionCount));
+
+					// Add sorted entries to Recent
+					foreach (CountEntry entry in sortedEntries)
+					{
+                        if(!entry.DecodedName.Contains("Start menu"))
+						{
+							Recent.Add(new StartMenuLink
+							{
+								Title = System.IO.Path.GetFileNameWithoutExtension(entry.DecodedName),
+								Icon = IconHelper.GetFileIcon(entry.DecodedName),
+								Link = entry.DecodedName
+							});
+						}
+
+						startfrequent++;
+
+						if (startfrequent >= maxfrequent)
+						{
+							break; // Break if maxfrequent limit reached
+						}
+					}
+				}
+				catch (Exception ex)
+				{
+					System.Windows.MessageBox.Show("Error reading UserAssist entries: " + ex.Message);
+				}
+			}
+		}
+
+		private void UIElement_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+		{
+			e.Handled = false;
+		}
+
+
+		private void Item_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+		{
+			if (sender is StackPanel panel)
+			{
+				// Change the background color or any other visual properties
+				panel.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb(80, 255, 255, 255));
+			}
+		}
+
+		private void Item_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+		{
+			if (sender is StackPanel panel)
+			{
+				// Revert back to the original background color or visual properties
+				panel.Background = System.Windows.Media.Brushes.Transparent; // or any other color you desire
+			}
+		}
+
 
 		private void PreparePinnedStartMenu() 
 		{
@@ -454,6 +551,11 @@ namespace B8TAM
         {
 			GridPrograms.Visibility = Visibility.Collapsed;
 		}
+
+        private void StartLogo_Click(object sender, RoutedEventArgs e)
+        {
+			OnStartTriggered(sender, e);
+        }
     }
     public class RunCommand : ICommand
 	{

@@ -83,6 +83,10 @@
     <Compile Include="ControlHelper.cs" />
     <Compile Include="DUIColorHelper.cs" />
     <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="FrequentAppsHelper.cs" />
+    <Compile Include="FrequentHelpers\CountEntry.cs" />
+    <Compile Include="FrequentHelpers\DelegateCommand.cs" />
+    <Compile Include="FrequentHelpers\SourceType.cs" />
     <Compile Include="GetFrequent.cs" />
     <Compile Include="IconHelper.cs" />
     <Compile Include="IconHelperTile.cs" />
@@ -207,6 +211,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="dui.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\startopenlogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\logobox.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

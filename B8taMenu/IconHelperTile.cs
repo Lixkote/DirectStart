@@ -473,7 +473,6 @@ namespace B8TAM
 
             if (isExecutable(fileName))
             {
-
                 WriteableBitmap bitmap = new WriteableBitmap(addToDic("aaa.exe", size) as BitmapSource);
                 ThreadPool.QueueUserWorkItem(new WaitCallback(PollIconCallback), new thumbnailInfo(bitmap, fileName, size));
                 return bitmap;
