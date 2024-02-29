@@ -4,10 +4,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:B8TAM" x:Class="B8TAM.StartMenu"
+        xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
         mc:Ignorable="d"
-        Title="Start menu" Width="528" Height="560" Left="0" x:Name="Menu" DataContext="{Binding ElementName=Menu}"
+        Title="Start menu" Width="533" SizeToContent="Manual" Height="520" Left="0" x:Name="Menu" DataContext="{Binding ElementName=Menu}"
 		AllowsTransparency="True" WindowStyle="None" Visibility="Visible" 
-		ShowInTaskbar="False" Activated="Window_Activated" Deactivated="Menu_Deactivated" FontFamily="Segoe UI" Topmost="True" BorderThickness="1" Loaded="Menu_Loaded" Background="{x:Null}">
+		ShowInTaskbar="False" Activated="Window_Activated" Deactivated="Menu_Deactivated" FontFamily="Segoe UI" Topmost="True" BorderThickness="1" Loaded="Menu_Loaded" Background="{x:Null}" Margin="0">
     <Window.Resources>
         <ResourceDictionary>
 
@@ -64,13 +65,13 @@
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
-        <Grid x:Name="StartMenuBackground" Background="#180053" Margin="-1,-1,-1,39">
+        <Grid x:Name="StartMenuBackground" Background="#180053" Margin="-1,-1,4,-1" Width="533" Height="520" VerticalAlignment="Top">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="267"/>
                 <ColumnDefinition Width="266"/>
             </Grid.ColumnDefinitions>
             <Border BorderThickness="0,1,1,1" Margin="0,0,5,0" BorderBrush="#33000000" Grid.ColumnSpan="2"/>
-            <ItemsControl x:Name="TilesHost" Grid.Column="1" Margin="0,3,0,0">
+            <ItemsControl dd:DragDrop.IsDropTarget="True" dd:DragDrop.UseVisualSourceItemSizeForDragAdorner="True" dd:DragDrop.IsDragSource="True" x:Name="TilesHost" Grid.Column="1" Margin="0,3,0,0">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel VerticalAlignment="Top"/>
@@ -78,7 +79,23 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.Resources>
                     <DataTemplate DataType="{x:Type local:Tile}">
-                        <local:TileControl Click="Tile_Click" Style="{DynamicResource ColoredTile}" Icon="{Binding Icon}" Title="{Binding Title}" Width="120" Height="120" FontSize="6" HorizontalAlignment="Left" Margin="3,5,5,3"></local:TileControl>
+                        <local:TileControl Click="Tile_Click" Style="{DynamicResource ColoredTile}" Icon="{Binding Icon}" Title="{Binding Title}" Width="120" Height="120" FontSize="6" HorizontalAlignment="Left" Margin="3,5,5,3">
+                            <local:TileControl.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem x:Name="UnpinTile">Unpin from Start</MenuItem>
+                                    <MenuItem>Pin to taskbar</MenuItem>
+                                    <MenuItem>Open new window</MenuItem>
+                                    <MenuItem>Run as administrator</MenuItem>
+                                    <MenuItem>Open file location</MenuItem>
+                                    <MenuItem Header="Resize">
+                                        <MenuItem Click="ResizeTileSmall_Click" x:Name="ResizeTileSmall">Small</MenuItem>
+                                        <MenuItem Click="ResizeTileNormal_Click" x:Name="ResizeTileNormal">Normal</MenuItem>
+                                        <MenuItem Click="ResizeTileWide_Click" x:Name="ResizeTileWide">Wide</MenuItem>
+                                        <MenuItem Click="ResizeTileLarge_Click" x:Name="ResizeTileLarge">Large</MenuItem>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </local:TileControl.ContextMenu>
+                        </local:TileControl>
                     </DataTemplate>
                 </ItemsControl.Resources>
             </ItemsControl>
@@ -89,7 +106,7 @@
                             <ItemsControl x:Name="ProgramsList" HorizontalContentAlignment="Stretch" BorderThickness="0" ItemsSource="{Binding Programs}" Background="Transparent" >
                                 <ItemsControl.Resources>
                                     <DataTemplate x:Name="listViewData" DataType="{x:Type local:StartMenuLink}">
-                                        <StackPanel Orientation="Horizontal" Height="30" MouseLeftButtonDown="Link_Click" OverridesDefaultStyle="True">
+                                        <StackPanel Orientation="Horizontal" Height="30" MouseLeftButtonUp="Link_Click" OverridesDefaultStyle="True">
                                             <StackPanel.ContextMenu>
                                                 <ContextMenu>
                                                     <MenuItem Header="Open" Click="Link_Click"/>
@@ -176,10 +193,10 @@
                             </ToggleButton>
                         </Grid>
                         <Grid Background="#4CFFFFFF" Height="1" VerticalAlignment="Top" Margin="0,35,0,0"/>
-                        <ItemsControl BorderBrush="#4AFFFFFF" BorderThickness="0,0,0,1" x:Name="PinnedItems" Background="Transparent" Margin="0,4" VerticalAlignment="Top" Grid.Row="1">
+                        <ItemsControl BorderBrush="#4AFFFFFF" BorderThickness="0,0,0,1" dd:DragDrop.IsDropTarget="True" dd:DragDrop.IsDragSource="True" x:Name="PinnedItems" Background="Transparent" Margin="0,4" VerticalAlignment="Top" Grid.Row="1">
                             <ItemsControl.Resources>
                                 <DataTemplate x:Name="listViewDataPinned" DataType="{x:Type local:StartMenuLink}">
-                                    <StackPanel Orientation="Horizontal" Height="40" MouseEnter="Item_MouseEnter" MouseLeave="Item_MouseLeave" OverridesDefaultStyle="False" MouseLeftButtonDown="Link_Click">
+                                    <StackPanel Orientation="Horizontal" Height="40" MouseEnter="Item_MouseEnter" MouseLeave="Item_MouseLeave" OverridesDefaultStyle="False" MouseLeftButtonUp="Link_Click">
                                         <StackPanel.ContextMenu>
                                             <ContextMenu>
                                                 <MenuItem Header="Open" Click="Link_Click"/>
@@ -229,7 +246,7 @@
                                 </DataTemplate>
                             </ItemsControl.Resources>
                         </ItemsControl>
-                        <ItemsControl x:Name="RecentApps" Margin="0,0,0,4" VerticalAlignment="Bottom" Grid.Row="2">
+                        <ItemsControl dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="False" x:Name="RecentApps" Margin="0,0,0,4" VerticalAlignment="Bottom" Grid.Row="2">
                             <ItemsControl.ItemContainerStyle>
                                 <Style>
                                     <Setter Property="Control.Margin" Value="0,2,0,0" />
@@ -237,7 +254,7 @@
                             </ItemsControl.ItemContainerStyle>
                             <ItemsControl.Resources>
                                 <DataTemplate x:Name="listViewDataPinnedR" DataType="{x:Type local:StartMenuLink}">
-                                    <StackPanel Orientation="Horizontal" Height="40" MouseEnter="Item_MouseEnter" MouseLeave="Item_MouseLeave" OverridesDefaultStyle="False" MouseLeftButtonDown="Link_Click" Margin="0">
+                                    <StackPanel Orientation="Horizontal" Height="40" MouseEnter="Item_MouseEnter" MouseLeave="Item_MouseLeave" OverridesDefaultStyle="False" MouseLeftButtonUp="Link_Click" Margin="0">
                                         <StackPanel.ContextMenu>
                                             <ContextMenu>
                                                 <MenuItem Header="Open" Click="Link_Click"/>
@@ -321,8 +338,17 @@
             </Grid>
 
         </Grid>
-        <Button Click="StartLogo_Click" x:Name="StartLogo" Margin="-1,518,0,-1" Width="49" HorizontalAlignment="Left" Background="#180053" BorderBrush="{x:Null}">
+        <Button Visibility="Collapsed" Click="StartLogo_Click" x:Name="StartLogoTop" Margin="-1,-1,0,-1" Width="49" HorizontalAlignment="Left" Background="#180053" BorderBrush="{x:Null}" VerticalAlignment="Top">
             <Image IsHitTestVisible="False" Source="/Resources/startopenlogo.png" Width="28" Height="41" UseLayoutRounding="True" RenderOptions.BitmapScalingMode="HighQuality"  SnapsToDevicePixels="True"/>
+        </Button>
+        <Button Visibility="Collapsed" Click="StartLogo_Click" x:Name="StartLogoLeft" Margin="-1,-1,0,0" Width="52" HorizontalAlignment="Left" Background="#180053" BorderBrush="{x:Null}" VerticalAlignment="Top">
+            <Image IsHitTestVisible="False" Source="/Resources/startopenlogo.png" Width="28" Height="41" UseLayoutRounding="True" RenderOptions.BitmapScalingMode="HighQuality"  SnapsToDevicePixels="True"/>
+        </Button>
+        <Button Visibility="Collapsed" Click="StartLogo_Click" x:Name="StartLogoRight" Margin="-1,-1,0,0" Width="53" HorizontalAlignment="Right" Background="#180053" BorderBrush="{x:Null}" VerticalAlignment="Top" Height="40">
+            <Image IsHitTestVisible="False" Source="/Resources/startopenlogo.png" Width="28" Height="41" UseLayoutRounding="True" RenderOptions.BitmapScalingMode="HighQuality"  SnapsToDevicePixels="True"/>
+        </Button>
+        <Button  Visibility="Collapsed" Click="StartLogo_Click" x:Name="StartLogoBottom" Margin="-1,518,0,-1" Width="49" HorizontalAlignment="Left" Background="#180053" BorderBrush="{x:Null}" Height="41" VerticalAlignment="Bottom">
+            <Image IsHitTestVisible="False" Source="/Resources/startopenlogo.png" Width="28" Height="41" UseLayoutRounding="True" RenderOptions.BitmapScalingMode="HighQuality"  SnapsToDevicePixels="True" Margin="-1,0,0,0"/>
         </Button>
     </Grid>    
 </Window>

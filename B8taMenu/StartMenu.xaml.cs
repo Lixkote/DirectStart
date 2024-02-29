@@ -96,11 +96,7 @@ namespace B8TAM
 
             // CollectionView startListView = (CollectionView)CollectionViewSource.GetDefaultView(ProgramsList.ItemsSource);
             PropertyGroupDescription startGroupDesc = new PropertyGroupDescription("Alph");
-            // startListView.GroupDescriptions.Add(startGroupDesc);
-
-            var desktopWorkingArea = SystemParameters.WorkArea;
-			base.Left = 0.0;
-			base.Top = SystemParameters.WorkArea.Bottom - base.Height + 40;
+			// startListView.GroupDescriptions.Add(startGroupDesc);
 			_listener = new StartMenuListener();
 			_listener.StartTriggered += OnStartTriggered;
 			SearchGlyph.Source = Properties.Resources.SearchBoxGlyph.ToBitmapImage();
@@ -111,8 +107,81 @@ namespace B8TAM
 			IntPtr pElementName = Marshal.StringToHGlobalUni(ImmersiveColors.ImmersiveStartBackground.ToString());
             System.Windows.Media.Color color = GetColor(pElementName);
 			StartMenuBackground.Background = new SolidColorBrush(color);
-			StartLogo.Background = new SolidColorBrush(color);
+			StartLogoTop.Background = new SolidColorBrush(color);
+			StartLogoLeft.Background = new SolidColorBrush(color);
+			StartLogoBottom.Background = new SolidColorBrush(color);
+			StartLogoRight.Background = new SolidColorBrush(color);
 			LoadTiles();
+			AdjustToTaskbar();
+		}
+
+		private void AdjustToTaskbar()
+        {
+			var desktopWorkingArea = SystemParameters.WorkArea;
+			// Get the screen
+			Screen screen = Screen.FromHandle(new System.Windows.Interop.WindowInteropHelper(this).Handle);
+			// Get the taskbar height
+			double taskbarheightinpx = SystemParameters.PrimaryScreenHeight - screen.WorkingArea.Height;
+			double taskbarwidthinpx = SystemParameters.PrimaryScreenWidth - screen.WorkingArea.Width;
+			var taskbarPosition = GetTaskbarPosition.Taskbar.Position;
+
+			
+			switch (taskbarPosition)
+			{
+				case GetTaskbarPosition.TaskbarPosition.Top:
+					StartMenuBackground.VerticalAlignment = VerticalAlignment.Bottom;
+					double ht = Menu.Height + taskbarheightinpx;
+					Menu.Height = ht;
+					base.Left = 0.0;
+					base.Top = 0.0;
+					StartLogoTop.Visibility = Visibility.Visible;
+					StartLogoTop.Height = taskbarheightinpx + 1;
+					Menu.Margin = new Thickness(0, taskbarheightinpx, 0, 0);
+					break;
+				case GetTaskbarPosition.TaskbarPosition.Bottom:
+					// Taskbar on Bottom
+					StartMenuBackground.VerticalAlignment = VerticalAlignment.Top;
+					double hb = Menu.Height + taskbarheightinpx;
+					Menu.Height = hb;
+					base.Left = 0.0;
+					base.Top = SystemParameters.WorkArea.Bottom - base.Height + taskbarheightinpx;
+					StartLogoBottom.Visibility = Visibility.Visible;
+					StartLogoBottom.Height = taskbarheightinpx + 1;
+					Menu.Margin = new Thickness(0, 0, 0, taskbarheightinpx);
+					break;
+				case GetTaskbarPosition.TaskbarPosition.Left:
+					// Taskbar on left
+					StartMenuBackground.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
+					double hl = Menu.Width + taskbarwidthinpx;
+					Menu.Width = hl;
+					Menu.Left = 0.0;
+					base.Top = 0.0;
+					StartLogoLeft.Width = taskbarwidthinpx;
+					StartLogoLeft.Visibility = Visibility.Collapsed;
+					break;
+				case GetTaskbarPosition.TaskbarPosition.Right:
+					// Taskbar on right
+					StartMenuBackground.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
+					double hr = Menu.Width + taskbarwidthinpx;
+					Menu.Width = hr;
+					base.Top = 0.0;
+					StartLogoRight.Width = taskbarwidthinpx;
+					StartLogoRight.Visibility = Visibility.Visible;
+					break;
+				case GetTaskbarPosition.TaskbarPosition.Unknown:
+					// Default case where we cannot detect taskbar position
+					StartMenuBackground.VerticalAlignment = VerticalAlignment.Top;
+					double hu = Menu.Height + taskbarheightinpx;
+					Menu.Height = hu;
+					base.Left = 0.0;
+					base.Top = SystemParameters.WorkArea.Bottom - base.Height + taskbarheightinpx;
+					StartLogoBottom.Visibility = Visibility.Visible;
+					StartLogoBottom.Height = taskbarheightinpx + 1;
+					Menu.Margin = new Thickness(0, 0, 0, taskbarheightinpx);
+					break;
+				default:
+					break;
+			}
 		}
 
 		int maxfrequent = 5;
@@ -555,6 +624,26 @@ namespace B8TAM
         private void StartLogo_Click(object sender, RoutedEventArgs e)
         {
 			OnStartTriggered(sender, e);
+        }
+
+        private void ResizeTileSmall_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ResizeTileNormal_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ResizeTileWide_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ResizeTileLarge_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
     public class RunCommand : ICommand

@@ -46,6 +46,9 @@
     <Reference Include="ControlzEx, Version=4.0.0.0, Culture=neutral, PublicKeyToken=69f1c32f803d307e, processorArchitecture=MSIL">
       <HintPath>..\packages\ControlzEx.4.4.0\lib\net45\ControlzEx.dll</HintPath>
     </Reference>
+    <Reference Include="GongSolutions.WPF.DragDrop, Version=2.0.0.0, Culture=neutral, PublicKeyToken=91f1945125b7a587, processorArchitecture=MSIL">
+      <HintPath>..\packages\gong-wpf-dragdrop.2.4.2\lib\net45\GongSolutions.WPF.DragDrop.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Xaml.Behaviors, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.19\lib\net45\Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference>
@@ -88,6 +91,7 @@
     <Compile Include="FrequentHelpers\DelegateCommand.cs" />
     <Compile Include="FrequentHelpers\SourceType.cs" />
     <Compile Include="GetFrequent.cs" />
+    <Compile Include="GetTaskbarPosition.cs" />
     <Compile Include="IconHelper.cs" />
     <Compile Include="IconHelperTile.cs" />
     <Compile Include="ImmersiveColors.cs" />

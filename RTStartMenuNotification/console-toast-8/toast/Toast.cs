@@ -29,7 +29,7 @@ namespace Win8Toast
             );
 
             if (File.Exists(shortcutPath))
-                // File.Delete(shortcutPath);
+                File.Delete(shortcutPath);
 
             InstallShortcut(shortcutPath);
 
