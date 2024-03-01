@@ -2,6 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:classic="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Classic"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:B8TAM" x:Class="B8TAM.StartMenu"
         xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
@@ -13,11 +14,8 @@
         <ResourceDictionary>
 
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="StartButtonStyle.xaml"/>
-                <ResourceDictionary Source="ToggleButtonStyle.xaml"/>
-                <ResourceDictionary Source="ToolTipStyle.xaml"/>
-                <ResourceDictionary Source="ContextMenuStyle.xaml"/>
-                <ResourceDictionary Source="TileControlStyle.xaml"/>
+                <!-- Change B8taMenu skin here for now: -->
+                <ResourceDictionary Source="Skins/Classic.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BoolToVis"/>
             <local:InvertBooleanConverter x:Key="InvertBool"/>
@@ -65,12 +63,14 @@
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
-        <Grid x:Name="StartMenuBackground" Background="#180053" Margin="-1,-1,4,-1" Width="533" Height="520" VerticalAlignment="Top">
+        <TextBlock Style="{StaticResource IsSkinSupportDuiBackgroundColor}" x:Name="IsSkinSupportDuiBackgroundColor" Visibility="Collapsed"></TextBlock>
+        <TextBlock Style="{StaticResource IsSkinSupportDwmBlur}" x:Name="IsDwmBlurEnabled" Text="" Visibility="Collapsed"></TextBlock>
+        <Grid x:Name="StartMenuBackground" Style="{StaticResource StartMenuBackgroundStyle}" Margin="-1,-1,4,-1" Width="533" Height="520" VerticalAlignment="Top" Background="Black">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="267"/>
                 <ColumnDefinition Width="266"/>
             </Grid.ColumnDefinitions>
-            <Border BorderThickness="0,1,1,1" Margin="0,0,5,0" BorderBrush="#33000000" Grid.ColumnSpan="2"/>
+            <Border x:Name="BackgroundBorder" BorderBrush="{x:Static classic:ClassicBorderDecorator.ClassicBorderBrush}" BorderThickness="0,1,1,1" Margin="0,0,5,0" Grid.ColumnSpan="2"/>
             <ItemsControl dd:DragDrop.IsDropTarget="True" dd:DragDrop.UseVisualSourceItemSizeForDragAdorner="True" dd:DragDrop.IsDragSource="True" x:Name="TilesHost" Grid.Column="1" Margin="0,3,0,0">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -163,8 +163,8 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <Grid x:Name="DesktopStartHeaderPane" VerticalAlignment="Top" Height="30">
-                            <ToggleButton Style="{DynamicResource MetroAnimatedToggleButton}" Grid.Row="0" Click="PowerButton_Click" x:Name="PowerButton" Foreground="White" TextOptions.TextHintingMode="Fixed" FontWeight="Medium" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" Width="30" Height="30" Margin="222,0,0,0">
-                                <Image x:Name="PowerGlyph" Source="pack://siteoforigin:,,,/Resources/powerglyph.png" Width="14"/>
+                            <ToggleButton Style="{DynamicResource MetroAnimatedToggleButton}" Grid.Row="0" Click="PowerButton_Click" x:Name="PowerButton" Foreground="White" TextOptions.TextHintingMode="Fixed" FontWeight="Medium" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Width="30" Height="30" Margin="222,0,0,0">
+                                <TextBlock x:Name="PowerFontGlyph" Style="{StaticResource PowerFontGlyphStyle}" FontSize="20" Text="" FontFamily="Segoe UI Symbol"></TextBlock>
                                 <FrameworkElement.ContextMenu>
                                     <local:ImmesiveContextMenu x:Name="PowerMenu" Style="{DynamicResource PowerMenuStyle}">
                                         <MenuItem x:Name="sleepPC" Header="Sleep" Click="sleepPC_Click"/>
@@ -183,7 +183,7 @@
                                     </local:ImmesiveContextMenu>
                                 </FrameworkElement.ContextMenu>
                                 <Grid x:Name="grid" Margin="2,0,0,0">
-                                    <TextBlock x:Name="UserNameText" Style="{StaticResource GDIText}" Text="%USERNAME%" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="30,0,0,2" FontSize="15" />
+                                    <TextBlock x:Name="UserNameText" Style="{StaticResource GDIText}" Text="%USERNAME%" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="30,0,0,2" FontSize="15" />
                                     <Border x:Name="UserImgBorder" CornerRadius="0" Width="26" Height="26" HorizontalAlignment="Left">
                                         <Border.Background>
                                             <ImageBrush x:Name="userpfp" Stretch="Fill"/>
@@ -307,33 +307,30 @@
                     </Grid>
 
 
-                    <ToggleButton x:Name="AppsToggle" Height="34" VerticalAlignment="Bottom" Margin="0,0,0,40" Checked="HandleCheck" Unchecked="HandleUnchecked">
+                    <ToggleButton x:Name="AppsToggle" Height="34" VerticalAlignment="Bottom" Margin="0,0,0,40" Checked="HandleCheck" Unchecked="HandleUnchecked" HorizontalContentAlignment="Left">
                         <Grid>
-                            <TextBlock x:Name="ToggleButtonText" Style="{StaticResource GDIText}" Text="All Apps" Foreground="White" Height="16" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="40,0,0,0"/>
-                            <TextBlock x:Name="ToggleButtonGlyph" Text="&#xE2B7;" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,0,0,0" FontFamily="Segoe UI Symbol" FontSize="16"/>
+                            <TextBlock x:Name="ToggleButtonText" Style="{StaticResource GDIText}" Text="All Apps"  Height="16" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="40,0,0,0"/>
+                            <TextBlock x:Name="ToggleButtonGlyph" Text="&#xE2B7;" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,0,0,0" FontFamily="Segoe UI Symbol" FontSize="16"/>
                         </Grid>
                     </ToggleButton>
-                    <Grid Background="White" VerticalAlignment="Bottom" Height="34">
-                        <Image x:Name="SearchGlyph" Source="pack://siteoforigin:,,,/Resources/SearchBoxGlyph.png" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" Height="34" Width="12" />
-                        <Border BorderThickness="1" Margin="-1">
-                            <Border.BorderBrush>
-                                <SolidColorBrush Color="#33000000"/>
-                            </Border.BorderBrush>
-                        </Border>
-                        <TextBlock  Style="{StaticResource GDIText}" HorizontalAlignment="Stretch" Text="Search everywhere" VerticalAlignment="Center" Margin="21,0,0,0"
+                    <Border Background="White" BorderBrush="#33000000" BorderThickness="1" VerticalAlignment="Bottom" Height="34">
+                        <Grid>
+                            <Image x:Name="SearchGlyph" Style="{StaticResource SearchGlyphStyle}" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" Height="34" Width="12" />
+                            <TextBlock  Style="{StaticResource GDIText}" HorizontalAlignment="Stretch" Text="Search everywhere" VerticalAlignment="Center" Margin="21,0,0,0"
 						Visibility="{Binding Text.IsEmpty, Converter={StaticResource BoolToVis}, ElementName=SearchText}">
-                            <TextBlock.Foreground>
-                                <SolidColorBrush Color="#CC000000" Opacity="0.7"/>
-                            </TextBlock.Foreground>
-                        </TextBlock>
-                        <TextBox x:Name="SearchText" HorizontalAlignment="Stretch" TextChanged="TextBox_TextChanged" VerticalContentAlignment="Center" Background="Transparent" BorderThickness="0" Margin="15,0,0,0">
-                            <TextBox.InputBindings>
-                                <KeyBinding Key="Return" 
+                                <TextBlock.Foreground>
+                                    <SolidColorBrush Color="#CC000000" Opacity="0.7"/>
+                                </TextBlock.Foreground>
+                            </TextBlock>
+                            <TextBox x:Name="SearchText" HorizontalAlignment="Stretch" TextChanged="TextBox_TextChanged" VerticalContentAlignment="Center" Background="Transparent" BorderThickness="0" Margin="15,0,0,0">
+                                <TextBox.InputBindings>
+                                    <KeyBinding Key="Return" 
 								Command="{Binding Run}"
 								CommandParameter="{Binding Text, ElementName=SearchText}"/>
-                            </TextBox.InputBindings>
-                        </TextBox>
-                    </Grid>
+                                </TextBox.InputBindings>
+                            </TextBox>
+                        </Grid>
+                    </Border>
                 </Grid>
             </Grid>
 
@@ -350,5 +347,5 @@
         <Button  Visibility="Collapsed" Click="StartLogo_Click" x:Name="StartLogoBottom" Margin="-1,518,0,-1" Width="49" HorizontalAlignment="Left" Background="#180053" BorderBrush="{x:Null}" Height="41" VerticalAlignment="Bottom">
             <Image IsHitTestVisible="False" Source="/Resources/startopenlogo.png" Width="28" Height="41" UseLayoutRounding="True" RenderOptions.BitmapScalingMode="HighQuality"  SnapsToDevicePixels="True" Margin="-1,0,0,0"/>
         </Button>
-    </Grid>    
+    </Grid>
 </Window>

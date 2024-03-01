@@ -100,17 +100,20 @@ namespace B8TAM
 			_listener = new StartMenuListener();
 			_listener.StartTriggered += OnStartTriggered;
 			SearchGlyph.Source = Properties.Resources.SearchBoxGlyph.ToBitmapImage();
-			PowerGlyph.Source = Properties.Resources.powerglyph.ToBitmapImage();
+			// PowerGlyph.Source = Properties.Resources.powerglyph.ToBitmapImage();
 			UserNameText.Text = Environment.UserName;
 
-			// DUI Colors for the main start menu grid:
-			IntPtr pElementName = Marshal.StringToHGlobalUni(ImmersiveColors.ImmersiveStartBackground.ToString());
-            System.Windows.Media.Color color = GetColor(pElementName);
-			StartMenuBackground.Background = new SolidColorBrush(color);
-			StartLogoTop.Background = new SolidColorBrush(color);
-			StartLogoLeft.Background = new SolidColorBrush(color);
-			StartLogoBottom.Background = new SolidColorBrush(color);
-			StartLogoRight.Background = new SolidColorBrush(color);
+            if (IsSkinSupportDuiBackgroundColor.Text == "True" || IsSkinSupportDuiBackgroundColor.Text == "true")
+            {
+                // DUI Colors for the main start menu grid:
+                IntPtr pElementName = Marshal.StringToHGlobalUni(ImmersiveColors.ImmersiveStartBackground.ToString());
+                System.Windows.Media.Color color = GetColor(pElementName);
+                StartMenuBackground.Background = new SolidColorBrush(color);
+                StartLogoTop.Background = new SolidColorBrush(color);
+                StartLogoLeft.Background = new SolidColorBrush(color);
+                StartLogoBottom.Background = new SolidColorBrush(color);
+                StartLogoRight.Background = new SolidColorBrush(color);
+            }
 			LoadTiles();
 			AdjustToTaskbar();
 		}
@@ -124,9 +127,10 @@ namespace B8TAM
 			double taskbarheightinpx = SystemParameters.PrimaryScreenHeight - screen.WorkingArea.Height;
 			double taskbarwidthinpx = SystemParameters.PrimaryScreenWidth - screen.WorkingArea.Width;
 			var taskbarPosition = GetTaskbarPosition.Taskbar.Position;
+            Version osVersion = Environment.OSVersion.Version;
 
-			
-			switch (taskbarPosition)
+
+            switch (taskbarPosition)
 			{
 				case GetTaskbarPosition.TaskbarPosition.Top:
 					StartMenuBackground.VerticalAlignment = VerticalAlignment.Bottom;
@@ -134,8 +138,21 @@ namespace B8TAM
 					Menu.Height = ht;
 					base.Left = 0.0;
 					base.Top = 0.0;
-					StartLogoTop.Visibility = Visibility.Visible;
-					StartLogoTop.Height = taskbarheightinpx + 1;
+                    if (osVersion.Major == 6 && osVersion.Minor == 3)
+                    {
+						// Windows 8.1
+                        StartLogoTop.Visibility = Visibility.Visible;
+                    }
+                    else if (osVersion.Major == 6 && osVersion.Minor == 2)
+                    {
+						// Windows 8
+                        StartLogoTop.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        StartLogoTop.Visibility = Visibility.Hidden;
+                    }
+                    StartLogoTop.Height = taskbarheightinpx + 1;
 					Menu.Margin = new Thickness(0, taskbarheightinpx, 0, 0);
 					break;
 				case GetTaskbarPosition.TaskbarPosition.Bottom:
@@ -145,7 +162,20 @@ namespace B8TAM
 					Menu.Height = hb;
 					base.Left = 0.0;
 					base.Top = SystemParameters.WorkArea.Bottom - base.Height + taskbarheightinpx;
-					StartLogoBottom.Visibility = Visibility.Visible;
+                    if (osVersion.Major == 6 && osVersion.Minor == 3)
+                    {
+                        // Windows 8.1
+                        StartLogoBottom.Visibility = Visibility.Visible;
+                    }
+                    if (osVersion.Major == 6 && osVersion.Minor == 2)
+                    {
+                        // Windows 8
+                        StartLogoBottom.Visibility = Visibility.Visible;
+                    }
+					else
+					{
+                        StartLogoBottom.Visibility = Visibility.Hidden;
+                    }
 					StartLogoBottom.Height = taskbarheightinpx + 1;
 					Menu.Margin = new Thickness(0, 0, 0, taskbarheightinpx);
 					break;
@@ -157,7 +187,20 @@ namespace B8TAM
 					Menu.Left = 0.0;
 					base.Top = 0.0;
 					StartLogoLeft.Width = taskbarwidthinpx;
-					StartLogoLeft.Visibility = Visibility.Collapsed;
+                    if (osVersion.Major == 6 && osVersion.Minor == 3)
+                    {
+                        // Windows 8.1
+                        StartLogoLeft.Visibility = Visibility.Visible;
+                    }
+                    else if (osVersion.Major == 6 && osVersion.Minor == 2)
+                    {
+                        // Windows 8
+                        StartLogoLeft.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        StartLogoLeft.Visibility = Visibility.Hidden;
+                    }
 					break;
 				case GetTaskbarPosition.TaskbarPosition.Right:
 					// Taskbar on right
@@ -166,8 +209,21 @@ namespace B8TAM
 					Menu.Width = hr;
 					base.Top = 0.0;
 					StartLogoRight.Width = taskbarwidthinpx;
-					StartLogoRight.Visibility = Visibility.Visible;
-					break;
+                    if (osVersion.Major == 6 && osVersion.Minor == 3)
+                    {
+                        // Windows 8.1
+                        StartLogoRight.Visibility = Visibility.Visible;
+                    }
+                    else if (osVersion.Major == 6 && osVersion.Minor == 2)
+                    {
+                        // Windows 8
+                        StartLogoRight.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        StartLogoRight.Visibility = Visibility.Hidden;
+                    }
+                    break;
 				case GetTaskbarPosition.TaskbarPosition.Unknown:
 					// Default case where we cannot detect taskbar position
 					StartMenuBackground.VerticalAlignment = VerticalAlignment.Top;
@@ -175,8 +231,21 @@ namespace B8TAM
 					Menu.Height = hu;
 					base.Left = 0.0;
 					base.Top = SystemParameters.WorkArea.Bottom - base.Height + taskbarheightinpx;
-					StartLogoBottom.Visibility = Visibility.Visible;
-					StartLogoBottom.Height = taskbarheightinpx + 1;
+                    if (osVersion.Major == 6 && osVersion.Minor == 3)
+                    {
+                        // Windows 8.1
+                        StartLogoBottom.Visibility = Visibility.Visible;
+                    }
+                    else if (osVersion.Major == 6 && osVersion.Minor == 2)
+                    {
+                        // Windows 8
+                        StartLogoBottom.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        StartLogoBottom.Visibility = Visibility.Hidden;
+                    }
+                    StartLogoBottom.Height = taskbarheightinpx + 1;
 					Menu.Margin = new Thickness(0, 0, 0, taskbarheightinpx);
 					break;
 				default:
@@ -316,7 +385,15 @@ namespace B8TAM
 		{
 			Screen screen = Screen.FromPoint(System.Windows.Forms.Control.MousePosition);
 			this.Left = screen.WorkingArea.Left;
-			BlurEffect.EnableBlur(this);
+            if (IsDwmBlurEnabled.Text == "False" || IsDwmBlurEnabled.Text == "false")
+			{
+				// Do not enable blur
+			}
+			else if (IsDwmBlurEnabled.Text == "True" || IsDwmBlurEnabled.Text == "true")
+			{
+				// Enable blur
+                BlurEffect.EnableBlur(this);
+            }
 		}
 
 		private void HandleCheck(object sender, RoutedEventArgs e)
