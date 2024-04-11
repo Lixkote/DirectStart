@@ -17,6 +17,10 @@ Untested but thereotically supported:
 - Windows 8
 - Windows Vista
 
+Credits:
+- Nazgul07 for AFSM (used as base for this project):
+https://github.com/Nazgul07/AFSM
+
 Screenshots: 
 
 ![B8taMenu 81 Screenshot](https://github.com/Lixkote/B8taMenu/blob/main/screenshot81.png)
