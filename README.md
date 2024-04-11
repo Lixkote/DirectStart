@@ -6,6 +6,7 @@ Documentation for various settings coming soon.
 
 Note: 
 - If you are building the application manually, you need to put the contents of the "ConfigurationTemplate" folder in the repository into your user folder.
+- To "pin" items to the start menu, please put them in the "C:\Users\yourusername\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\User Pinned\StartMenu"
 
 Supported operating systems:
 - Windows 8.1 build 6.3.9600
