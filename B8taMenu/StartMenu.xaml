@@ -184,11 +184,8 @@
                                 </FrameworkElement.ContextMenu>
                                 <Grid x:Name="grid" Margin="2,0,0,0">
                                     <TextBlock x:Name="UserNameText" Style="{StaticResource GDIText}" Text="%USERNAME%" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="30,0,0,2" FontSize="15" Foreground="White" />
-                                    <Border x:Name="UserImgBorder" CornerRadius="0" Width="26" Height="26" HorizontalAlignment="Left">
-                                        <Border.Background>
-                                            <ImageBrush x:Name="userpfp" Stretch="Fill"/>
-                                        </Border.Background>
-                                    </Border>
+                                    <Image x:Name="userpfp" Width="26" SnapsToDevicePixels="True" RenderOptions.BitmapScalingMode="HighQuality"  Height="26" HorizontalAlignment="Left">
+                                    </Image>
                                 </Grid>
                             </ToggleButton>
                         </Grid>

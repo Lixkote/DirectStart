@@ -89,7 +89,7 @@ namespace B8TAM
 			InitializeComponent();
 
 			UserImageButton.Tag = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-			userpfp.ImageSource = IconHelper.GetUserTile(Environment.UserName).ToBitmapImage();
+			userpfp.Source = IconHelper.GetUserTile(Environment.UserName).ToBitmapImage();
 			PinnedItems.ItemsSource = Pinned;
 			ProgramsList.ItemsSource = Programs;
 			RecentApps.ItemsSource = Recent;
