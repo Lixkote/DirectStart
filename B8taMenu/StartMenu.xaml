@@ -15,7 +15,7 @@
 
             <ResourceDictionary.MergedDictionaries>
                 <!-- Change B8taMenu skin here for now: -->
-                <ResourceDictionary Source="Skins/Classic.xaml"/>
+                <ResourceDictionary Source="Skins/Default.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BoolToVis"/>
             <local:InvertBooleanConverter x:Key="InvertBool"/>
@@ -164,7 +164,7 @@
                         </Grid.RowDefinitions>
                         <Grid x:Name="DesktopStartHeaderPane" VerticalAlignment="Top" Height="30">
                             <ToggleButton Style="{DynamicResource MetroAnimatedToggleButton}" Grid.Row="0" Click="PowerButton_Click" x:Name="PowerButton" Foreground="White" TextOptions.TextHintingMode="Fixed" FontWeight="Medium" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Width="30" Height="30" Margin="222,0,0,0">
-                                <TextBlock x:Name="PowerFontGlyph" Style="{StaticResource PowerFontGlyphStyle}" FontSize="20" Text="" FontFamily="Segoe UI Symbol"></TextBlock>
+                                <TextBlock x:Name="PowerFontGlyph" FontSize="20" Text="" FontFamily="Segoe UI Symbol" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
                                 <FrameworkElement.ContextMenu>
                                     <local:ImmesiveContextMenu x:Name="PowerMenu" Style="{DynamicResource PowerMenuStyle}">
                                         <MenuItem x:Name="sleepPC" Header="Sleep" Click="sleepPC_Click"/>
@@ -183,7 +183,7 @@
                                     </local:ImmesiveContextMenu>
                                 </FrameworkElement.ContextMenu>
                                 <Grid x:Name="grid" Margin="2,0,0,0">
-                                    <TextBlock x:Name="UserNameText" Style="{StaticResource GDIText}" Text="%USERNAME%" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="30,0,0,2" FontSize="15" />
+                                    <TextBlock x:Name="UserNameText" Style="{StaticResource GDIText}" Text="%USERNAME%" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="30,0,0,2" FontSize="15" Foreground="White" />
                                     <Border x:Name="UserImgBorder" CornerRadius="0" Width="26" Height="26" HorizontalAlignment="Left">
                                         <Border.Background>
                                             <ImageBrush x:Name="userpfp" Stretch="Fill"/>
@@ -309,8 +309,8 @@
 
                     <ToggleButton x:Name="AppsToggle" Height="34" VerticalAlignment="Bottom" Margin="0,0,0,40" Checked="HandleCheck" Unchecked="HandleUnchecked" HorizontalContentAlignment="Left">
                         <Grid>
-                            <TextBlock x:Name="ToggleButtonText" Style="{StaticResource GDIText}" Text="All Apps"  Height="16" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="40,0,0,0"/>
-                            <TextBlock x:Name="ToggleButtonGlyph" Text="&#xE2B7;" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,0,0,0" FontFamily="Segoe UI Symbol" FontSize="16"/>
+                            <TextBlock x:Name="ToggleButtonText" Style="{StaticResource GDIText}" Text="All Apps"  Height="16" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="40,0,0,0" Foreground="White"/>
+                            <TextBlock x:Name="ToggleButtonGlyph" Text="&#xE2B7;" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,0,0,0" FontFamily="Segoe UI Symbol" FontSize="16" Foreground="White"/>
                         </Grid>
                     </ToggleButton>
                     <Border Background="White" BorderBrush="#33000000" BorderThickness="1" VerticalAlignment="Bottom" Height="34">

@@ -460,6 +460,7 @@
     <Style x:Key="GDIText" TargetType="{x:Type TextBlock}">
         <Setter Property="TextOptions.TextFormattingMode" Value="Display"></Setter>
         <Setter Property="TextOptions.TextRenderingMode" Value="ClearType"></Setter>
+        <Setter Property="Foreground" Value="White" />
     </Style>
     <Style x:Key="FallbackTile" TargetType="local:TileControl">
         <Setter Property="Background" >
