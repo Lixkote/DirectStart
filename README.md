@@ -4,6 +4,9 @@ Recreation of the Windows 10 Technical Preview/Windows RT Update 3's DirectUI ba
 The tile layout is based around an user editable xml, which is stored in your User folder, in the DirectStart folder.
 Documentation for various settings coming soon.
 
+Note: 
+- If you are building the application manually, you need to put the contents of the "ConfigurationTemplate" folder in the repository into your user folder.
+
 Supported operating systems:
 - Windows 8.1 build 6.3.9600
 - All Windows 10 builds
