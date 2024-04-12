@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:classic="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Classic"
         xmlns:aero="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
+        xmlns:controls="clr-namespace:BlurryControls.Controls;assembly=BlurryControls"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:B8TAM" x:Class="B8TAM.StartMenu"
         xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
@@ -16,7 +17,7 @@
 
             <ResourceDictionary.MergedDictionaries>
                 <!-- Change B8taMenu skin here for now: -->
-                <ResourceDictionary Source="Skins/Default.xaml"/>
+                <ResourceDictionary Source="Skins/Fluent.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BoolToVis"/>
             <local:InvertBooleanConverter x:Key="InvertBool"/>
@@ -63,14 +64,15 @@
             </Style>
         </ResourceDictionary>
     </Window.Resources>
-    <Grid>
-        <TextBlock Style="{StaticResource IsSkinSupportDuiBackgroundColor}" x:Name="IsSkinSupportDuiBackgroundColor" Visibility="Collapsed"></TextBlock>
-        <TextBlock Style="{StaticResource IsSkinSupportDwmBlur}" x:Name="IsDwmBlurEnabled" Text="" Visibility="Collapsed"></TextBlock>
-        <Grid x:Name="StartMenuBackground" Style="{StaticResource StartMenuBackgroundStyle}" Margin="-1,-1,4,-1" Width="533" Height="520" VerticalAlignment="Top" Background="Black">
+    <Grid x:Name="OuterBlurContainer">
+        <Grid x:Name="InnerBlurContainer"></Grid>
+        <Grid x:Name="StartMenuBackground" Margin="-1,-1,4,-1" Width="533" Height="520" VerticalAlignment="Top" Style="{StaticResource StartMenuBackgroundStyle}" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="267"/>
                 <ColumnDefinition Width="266"/>
             </Grid.ColumnDefinitions>
+            <TextBlock Style="{StaticResource IsSkinSupportDuiBackgroundColor}" x:Name="IsSkinSupportDuiBackgroundColor" Visibility="Collapsed"></TextBlock>
+            <TextBlock Style="{StaticResource IsSkinSupportDwmBlur}" x:Name="IsDwmBlurEnabled" Visibility="Collapsed"></TextBlock>
             <Border x:Name="BackgroundBorder" BorderThickness="0,1,1,1" Margin="0,0,5,0" Grid.ColumnSpan="2"/>
             <ItemsControl dd:DragDrop.IsDropTarget="True" dd:DragDrop.UseVisualSourceItemSizeForDragAdorner="True" dd:DragDrop.IsDragSource="True" x:Name="TilesHost" Grid.Column="1" Margin="0,3,0,0">
                 <ItemsControl.ItemsPanel>
@@ -164,7 +166,7 @@
                         </Grid.RowDefinitions>
                         <Grid x:Name="DesktopStartHeaderPane" VerticalAlignment="Top" Height="30">
                             <ToggleButton Style="{DynamicResource MetroAnimatedToggleButton}" Grid.Row="0" Click="PowerButton_Click" x:Name="PowerButton" Foreground="White" TextOptions.TextHintingMode="Fixed" FontWeight="Medium" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Width="30" Height="30" Margin="222,0,0,0">
-                                <TextBlock x:Name="PowerFontGlyph" FontSize="20" Text="" FontFamily="Segoe UI Symbol" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+                                <TextBlock x:Name="PowerFontGlyph" Style="{DynamicResource PowerGlyphStyleText}" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
                                 <FrameworkElement.ContextMenu>
                                     <local:ImmesiveContextMenu x:Name="PowerMenu" Style="{DynamicResource PowerMenuStyle}">
                                         <MenuItem x:Name="sleepPC" Header="Sleep" Click="sleepPC_Click"/>
@@ -184,13 +186,25 @@
                                 </FrameworkElement.ContextMenu>
                                 <Grid x:Name="grid" Margin="2,0,0,0">
                                     <TextBlock x:Name="UserNameText" Style="{StaticResource GDIText}" Text="%USERNAME%" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="30,0,0,2" FontSize="15" Foreground="White" />
-                                    <Image x:Name="userpfp" Width="26" SnapsToDevicePixels="True" RenderOptions.BitmapScalingMode="HighQuality"  Height="26" HorizontalAlignment="Left">
-                                    </Image>
+                                    <Grid Width="26" SnapsToDevicePixels="True" Height="26" HorizontalAlignment="Left">
+                                        <WrapPanel Name ="container">
+                                            <Image x:Name="userpfp"  RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="UniformToFill"/>
+                                            <WrapPanel.OpacityMask>
+                                                <VisualBrush >
+                                                    <VisualBrush.Visual>
+                                                        <Border Style="{DynamicResource PFPRound}" x:Name="UserRounderer" Height="{Binding ElementName=container, Path=ActualHeight}" 
+            Width="{Binding ElementName=container, Path=ActualWidth}"
+            Background="White" />
+                                                    </VisualBrush.Visual>
+                                                </VisualBrush>
+                                            </WrapPanel.OpacityMask>
+                                        </WrapPanel>
+                                    </Grid>
                                 </Grid>
                             </ToggleButton>
                         </Grid>
-                        <Grid Background="#4CFFFFFF" Height="1" VerticalAlignment="Top" Margin="0,35,0,0"/>
-                        <ItemsControl BorderBrush="#4AFFFFFF" BorderThickness="0,0,0,1" dd:DragDrop.IsDropTarget="True" dd:DragDrop.IsDragSource="True" x:Name="PinnedItems" Background="Transparent" Margin="0,4" VerticalAlignment="Top" Grid.Row="1">
+                        <Grid  Style="{DynamicResource Separator}" Height="1" VerticalAlignment="Top" Margin="0,35,0,0"/>
+                        <ItemsControl Style="{DynamicResource Separator2}" BorderThickness="0,0,0,1" dd:DragDrop.IsDropTarget="True" dd:DragDrop.IsDragSource="True" x:Name="PinnedItems" Background="Transparent" Margin="0,4" VerticalAlignment="Top" Grid.Row="1">
                             <ItemsControl.Resources>
                                 <DataTemplate x:Name="listViewDataPinned" DataType="{x:Type local:StartMenuLink}">
                                     <StackPanel Orientation="Horizontal" Height="40" MouseEnter="Item_MouseEnter" MouseLeave="Item_MouseLeave" OverridesDefaultStyle="False" MouseLeftButtonUp="Link_Click">
@@ -307,14 +321,14 @@
                     <ToggleButton x:Name="AppsToggle" Height="34" VerticalAlignment="Bottom" Margin="0,0,0,40" Checked="HandleCheck" Unchecked="HandleUnchecked" HorizontalContentAlignment="Left">
                         <Grid>
                             <TextBlock x:Name="ToggleButtonText" Style="{StaticResource GDIText}" Text="All Apps"  Height="16" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="40,0,0,0" Foreground="White"/>
-                            <TextBlock x:Name="ToggleButtonGlyph" Text="&#xE2B7;" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,0,0,0" FontFamily="Segoe UI Symbol" FontSize="16" Foreground="White"/>
+                            <TextBlock x:Name="ToggleButtonGlyph" Style="{StaticResource AppsGlyphStyleText}"  VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,0,0,0" Foreground="White"/>
                         </Grid>
                     </ToggleButton>
                     <Border Background="White" BorderBrush="#33000000" BorderThickness="1" VerticalAlignment="Bottom" Height="34">
                         <Grid>
                             <Image x:Name="SearchGlyph" Style="{StaticResource SearchGlyphStyle}" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" Height="34" Width="12" />
                             <TextBlock  Style="{StaticResource GDIText}" HorizontalAlignment="Stretch" Text="Search everywhere" VerticalAlignment="Center" Margin="21,0,0,0"
-						Visibility="{Binding Text.IsEmpty, Converter={StaticResource BoolToVis}, ElementName=SearchText}">
+Visibility="{Binding Text.IsEmpty, Converter={StaticResource BoolToVis}, ElementName=SearchText}">
                                 <TextBlock.Foreground>
                                     <SolidColorBrush Color="#CC000000" Opacity="0.7"/>
                                 </TextBlock.Foreground>
@@ -322,15 +336,14 @@
                             <TextBox x:Name="SearchText" HorizontalAlignment="Stretch" TextChanged="TextBox_TextChanged" VerticalContentAlignment="Center" Background="Transparent" BorderThickness="0" Margin="15,0,0,0">
                                 <TextBox.InputBindings>
                                     <KeyBinding Key="Return" 
-								Command="{Binding Run}"
-								CommandParameter="{Binding Text, ElementName=SearchText}"/>
+		Command="{Binding Run}"
+		CommandParameter="{Binding Text, ElementName=SearchText}"/>
                                 </TextBox.InputBindings>
                             </TextBox>
                         </Grid>
                     </Border>
                 </Grid>
             </Grid>
-
         </Grid>
         <Button Visibility="Collapsed" Click="StartLogo_Click" x:Name="StartLogoTop" Margin="-1,-1,0,-1" Width="49" HorizontalAlignment="Left" Background="#180053" BorderBrush="{x:Null}" VerticalAlignment="Top">
             <Image IsHitTestVisible="False" Source="/Resources/startopenlogo.png" Width="28" Height="41" UseLayoutRounding="True" RenderOptions.BitmapScalingMode="HighQuality"  SnapsToDevicePixels="True"/>

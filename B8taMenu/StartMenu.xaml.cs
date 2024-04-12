@@ -20,6 +20,7 @@ using System.Windows.Data;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
+using BlurryControls.Controls;
 using System.Windows.Media.Animation;
 using System.Xml;
 using System.Xml.Serialization;
@@ -392,16 +393,16 @@ namespace B8TAM
 			else if (IsDwmBlurEnabled.Text == "True" || IsDwmBlurEnabled.Text == "true")
 			{
 				// Enable blur
-                BlurEffect.EnableBlur(this);
+				BlurEffect.EnableBlur(this);
             }
 		}
 
-		private void HandleCheck(object sender, RoutedEventArgs e)
+        private void HandleCheck(object sender, RoutedEventArgs e)
 		{
 			GridPrograms.Visibility = Visibility.Visible;
 			GridTogglable.Visibility = Visibility.Collapsed;
 			ToggleButtonText.Text = "Back";
-			ToggleButtonGlyph.Text = "";
+			// ToggleButtonGlyph.Text = "";
 		}
 
 		private void HandleUnchecked(object sender, RoutedEventArgs e)
@@ -409,7 +410,7 @@ namespace B8TAM
 			GridPrograms.Visibility = Visibility.Collapsed;
 			GridTogglable.Visibility = Visibility.Visible;
 			ToggleButtonText.Text = "All Apps";
-			ToggleButtonGlyph.Text = "";
+			// ToggleButtonGlyph.Text = "";
 		}
 
 		private void Menu_Deactivated(object sender, EventArgs e)

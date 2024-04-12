@@ -44,6 +44,9 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BlurryControls, Version=1.0.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\BlurryControls.1.0.24\lib\net452\BlurryControls.dll</HintPath>
+    </Reference>
     <Reference Include="ControlzEx, Version=4.0.0.0, Culture=neutral, PublicKeyToken=69f1c32f803d307e, processorArchitecture=MSIL">
       <HintPath>..\packages\ControlzEx.4.4.0\lib\net45\ControlzEx.dll</HintPath>
     </Reference>
@@ -141,15 +144,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Skins\Default.xaml">
+    <Page Include="Skins\Metro.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Skins\Seven.xaml">
+    <Page Include="Skins\Aero.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Skins\10RTM.xaml">
+    <Page Include="Skins\Fluent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
