@@ -14,10 +14,9 @@
 		ShowInTaskbar="False" Activated="Window_Activated" Deactivated="Menu_Deactivated" FontFamily="Segoe UI" Topmost="True" BorderThickness="1" Loaded="Menu_Loaded" Background="{x:Null}" Margin="0">
     <Window.Resources>
         <ResourceDictionary>
-
             <ResourceDictionary.MergedDictionaries>
                 <!-- Change B8taMenu skin here for now: -->
-                <ResourceDictionary Source="Skins/Fluent.xaml"/>
+                <!-- ResourceDictionary Source="Skins/Metro.xaml"/ -->
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BoolToVis"/>
             <local:InvertBooleanConverter x:Key="InvertBool"/>
@@ -108,15 +107,25 @@
                             <ItemsControl x:Name="ProgramsList" HorizontalContentAlignment="Stretch" BorderThickness="0" ItemsSource="{Binding Programs}" Background="Transparent" >
                                 <ItemsControl.Resources>
                                     <DataTemplate x:Name="listViewData" DataType="{x:Type local:StartMenuLink}">
-                                        <StackPanel Orientation="Horizontal" Height="30" MouseLeftButtonUp="Link_Click" OverridesDefaultStyle="True">
+                                        <StackPanel HorizontalAlignment="Stretch" Background="Transparent">                                            
                                             <StackPanel.ContextMenu>
                                                 <ContextMenu>
                                                     <MenuItem Header="Open" Click="Link_Click"/>
                                                     <MenuItem Header="Open file location..." Click="BrowseLink_Click"/>
                                                 </ContextMenu>
                                             </StackPanel.ContextMenu>
-                                            <Image Source="{Binding Icon}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="16" Height="16" Margin="0,0,5,0"/>
-                                            <TextBlock Text="{Binding Title}" Style="{StaticResource GDIText}" Foreground="White" VerticalAlignment="Center" />
+                                            <ToggleButton Click="Link_Click" x:Name="collapse" IsChecked="False" Height="30" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" BorderThickness="0" HorizontalAlignment="Stretch">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="20"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="30"/>
+                                                        <ColumnDefinition Width="10"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Image Grid.Column="0" Source="{Binding Icon}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="16" Height="16" Margin="0,0,5,0"/>
+                                                    <TextBlock Grid.Column="1" Style="{StaticResource GDIText}" Text="{Binding Title}" Foreground="White" VerticalAlignment="Center" TextAlignment="Left"/>
+                                                </Grid>
+                                            </ToggleButton>
                                         </StackPanel>
                                     </DataTemplate>
                                     <DataTemplate  x:Name="listViewAttr" DataType="{x:Type local:StartMenuDirectory}">
@@ -192,7 +201,7 @@
                                             <WrapPanel.OpacityMask>
                                                 <VisualBrush >
                                                     <VisualBrush.Visual>
-                                                        <Border Style="{DynamicResource PFPRound}" x:Name="UserRounderer" Height="{Binding ElementName=container, Path=ActualHeight}" 
+                                                        <Border x:Name="UserRounderer" Height="{Binding ElementName=container, Path=ActualHeight}" 
             Width="{Binding ElementName=container, Path=ActualWidth}"
             Background="White" />
                                                     </VisualBrush.Visual>
@@ -278,7 +287,7 @@
                                 </DataTemplate>
                                 <DataTemplate  x:Name="listViewAttrPinnedR" DataType="{x:Type local:StartMenuDirectory}">
                                     <StackPanel HorizontalAlignment="Stretch" Background="Transparent">
-                                        <ToggleButton x:Name="collapse" IsChecked="False" Height="40" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" BorderThickness="0" HorizontalAlignment="Stretch">
+                                        <ToggleButton x:Name="collapse" IsChecked="False" Height="40" MouseEnter="Item_MouseEnter" MouseLeave="Item_MouseLeave" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" BorderThickness="0" HorizontalAlignment="Stretch">
                                             <ToggleButton.ContextMenu>
                                                 <ContextMenu>
                                                     <MenuItem Header="Open" Click="Link_Click"/>

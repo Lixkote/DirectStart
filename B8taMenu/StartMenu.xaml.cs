@@ -43,9 +43,12 @@ namespace B8TAM
 		public SourceType SelectedSourceType { get; set; }
 		private List<SourceType> sourceTypes;
 		private ObservableCollection<CountEntry> countEntries;
+		string forceFillStartButton;
+		string profilePictureShape;
 
 
-		public ICommand Run => new RunCommand(RunCommand);
+
+        public ICommand Run => new RunCommand(RunCommand);
 
 		private static Color GetColor(IntPtr pElementName)
 		{
@@ -117,7 +120,17 @@ namespace B8TAM
             }
 			LoadTiles();
 			AdjustToTaskbar();
-		}
+            profilePictureShape = (string)System.Windows.Application.Current.Resources["ProfilePictureShape"];
+            forceFillStartButton = (string)System.Windows.Application.Current.Resources["ForceFillStartButton"];
+			if (profilePictureShape == "rounded")
+			{
+				UserRounderer.CornerRadius = new CornerRadius(999);
+            }
+			else
+			{
+                UserRounderer.CornerRadius = new CornerRadius(0);
+            }
+        }
 
 		private void AdjustToTaskbar()
         {
@@ -144,7 +157,7 @@ namespace B8TAM
 						// Windows 8.1
                         StartLogoTop.Visibility = Visibility.Visible;
                     }
-                    else if (osVersion.Major == 6 && osVersion.Minor == 2)
+                    else if (forceFillStartButton == "true")
                     {
 						// Windows 8
                         StartLogoTop.Visibility = Visibility.Visible;
@@ -155,7 +168,12 @@ namespace B8TAM
                     }
                     StartLogoTop.Height = taskbarheightinpx + 1;
 					Menu.Margin = new Thickness(0, taskbarheightinpx, 0, 0);
-					break;
+                    if (forceFillStartButton == "true")
+                    {
+                        // Windows 8
+                        StartLogoTop.Visibility = Visibility.Visible;
+                    }
+                    break;
 				case GetTaskbarPosition.TaskbarPosition.Bottom:
 					// Taskbar on Bottom
 					StartMenuBackground.VerticalAlignment = VerticalAlignment.Top;
@@ -168,7 +186,7 @@ namespace B8TAM
                         // Windows 8.1
                         StartLogoBottom.Visibility = Visibility.Visible;
                     }
-                    if (osVersion.Major == 6 && osVersion.Minor == 2)
+                    else if (forceFillStartButton == "true")
                     {
                         // Windows 8
                         StartLogoBottom.Visibility = Visibility.Visible;
@@ -179,7 +197,12 @@ namespace B8TAM
                     }
 					StartLogoBottom.Height = taskbarheightinpx + 1;
 					Menu.Margin = new Thickness(0, 0, 0, taskbarheightinpx);
-					break;
+                    if (forceFillStartButton == "true")
+                    {
+                        // Windows 8
+                        StartLogoBottom.Visibility = Visibility.Visible;
+                    }
+                    break;
 				case GetTaskbarPosition.TaskbarPosition.Left:
 					// Taskbar on left
 					StartMenuBackground.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
@@ -193,7 +216,7 @@ namespace B8TAM
                         // Windows 8.1
                         StartLogoLeft.Visibility = Visibility.Visible;
                     }
-                    else if (osVersion.Major == 6 && osVersion.Minor == 2)
+                    else if (forceFillStartButton == "true")
                     {
                         // Windows 8
                         StartLogoLeft.Visibility = Visibility.Visible;
@@ -215,7 +238,7 @@ namespace B8TAM
                         // Windows 8.1
                         StartLogoRight.Visibility = Visibility.Visible;
                     }
-                    else if (osVersion.Major == 6 && osVersion.Minor == 2)
+                    else if (forceFillStartButton == "true")
                     {
                         // Windows 8
                         StartLogoRight.Visibility = Visibility.Visible;
@@ -237,7 +260,7 @@ namespace B8TAM
                         // Windows 8.1
                         StartLogoBottom.Visibility = Visibility.Visible;
                     }
-                    else if (osVersion.Major == 6 && osVersion.Minor == 2)
+                    else if (forceFillStartButton == "true")
                     {
                         // Windows 8
                         StartLogoBottom.Visibility = Visibility.Visible;
@@ -381,8 +404,8 @@ namespace B8TAM
 				SearchText.Focus();
 			}
 		}
-		
-		private void Window_Activated(object sender, EventArgs e)
+
+        private void Window_Activated(object sender, EventArgs e)
 		{
 			Screen screen = Screen.FromPoint(System.Windows.Forms.Control.MousePosition);
 			this.Left = screen.WorkingArea.Left;
@@ -402,16 +425,18 @@ namespace B8TAM
 			GridPrograms.Visibility = Visibility.Visible;
 			GridTogglable.Visibility = Visibility.Collapsed;
 			ToggleButtonText.Text = "Back";
-			// ToggleButtonGlyph.Text = "";
-		}
+			ToggleButtonGlyph.Text = "";
+			ToggleButtonGlyph.FontFamily = new System.Windows.Media.FontFamily("Segoe UI Symbol");
+        }
 
 		private void HandleUnchecked(object sender, RoutedEventArgs e)
 		{
 			GridPrograms.Visibility = Visibility.Collapsed;
 			GridTogglable.Visibility = Visibility.Visible;
 			ToggleButtonText.Text = "All Apps";
-			// ToggleButtonGlyph.Text = "";
-		}
+			ToggleButtonGlyph.Text = "";
+            ToggleButtonGlyph.FontFamily = new System.Windows.Media.FontFamily("Segoe UI Symbol");
+        }
 
 		private void Menu_Deactivated(object sender, EventArgs e)
 		{
