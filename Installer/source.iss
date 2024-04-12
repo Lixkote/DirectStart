@@ -29,6 +29,7 @@ SetupIconFile=C:\Users\lixkote\Documents\GitHub\B8taMenu\Installer\install.ico
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
+MinVersion=6.0
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
