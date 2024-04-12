@@ -705,7 +705,12 @@ namespace B8TAM
 
         private void ResizeTileSmall_Click(object sender, RoutedEventArgs e)
         {
-
+			var h = sender as System.Windows.Controls.MenuItem;
+			var b = h.DataContext as Tile;
+			b.Size = "Small";
+			TilesHost.ItemsSource = null;
+            LoadTiles();
+            TilesHost.ItemsSource = Tiles;
         }
 
         private void ResizeTileNormal_Click(object sender, RoutedEventArgs e)

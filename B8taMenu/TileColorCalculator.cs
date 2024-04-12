@@ -14,34 +14,34 @@ namespace B8TAM
 {
     class TileColorCalculator
     {
-        public static string CalculateRightGradient(ImageSource imageSource, String Tilename)
+        public static string CalculateRightGradient(ImageSource imageSource, String Tilename, string customtilecolor)
         {
             Bitmap bitmap = ConvertToBitmap(imageSource);
             System.Drawing.Color averageColor = CalculateAverageColor(bitmap);
 
-            DefaultTileColors closestColor = FindClosestColor(averageColor, Tilename);
+            DefaultTileColors closestColor = FindClosestColor(averageColor, Tilename, customtilecolor);
 
             TileColor selectedTileColor = GetTileColor(closestColor);
             return selectedTileColor.RightGradient;
         }
 
-        public static string CalculateLeftGradient(ImageSource imageSource, String Tilename)
+        public static string CalculateLeftGradient(ImageSource imageSource, String Tilename, string customtilecolor)
         {
             Bitmap bitmap = ConvertToBitmap(imageSource);
             System.Drawing.Color averageColor = CalculateAverageColor(bitmap);
 
-            DefaultTileColors closestColor = FindClosestColor(averageColor, Tilename);
+            DefaultTileColors closestColor = FindClosestColor(averageColor, Tilename, customtilecolor);
 
             TileColor selectedTileColor = GetTileColor(closestColor);
             return selectedTileColor.LeftGradient;
         }
 
-        public static string CalculateBorder(ImageSource imageSource, String Tilename)
+        public static string CalculateBorder(ImageSource imageSource, String Tilename, string customtilecolor)
         {
             Bitmap bitmap = ConvertToBitmap(imageSource);
             System.Drawing.Color averageColor = CalculateAverageColor(bitmap);
 
-            DefaultTileColors closestColor = FindClosestColor(averageColor, Tilename);
+            DefaultTileColors closestColor = FindClosestColor(averageColor, Tilename, customtilecolor);
 
             TileColor selectedTileColor = GetTileColor(closestColor);
             return selectedTileColor.Border;
@@ -131,7 +131,7 @@ namespace B8TAM
             return System.Drawing.Color.FromArgb((int)red, (int)green, (int)blue);
         }
 
-        private static DefaultTileColors FindClosestColor(System.Drawing.Color averageColor, String tilename)
+        private static DefaultTileColors FindClosestColor(System.Drawing.Color averageColor, String tilename, string customtilecolor)
         {
             // Calculate distance to each predefined color and find the closest one
             double minDistance = double.MaxValue;
@@ -149,30 +149,41 @@ namespace B8TAM
                     closestColor = color;
                 }
             }
-            // If the average color has blue elements, prioritize teal
-            if (tilename.Contains("GitHub Desktop"))
+            if (tilename.Contains("GitHub Desktop") || customtilecolor == "Pink" || customtilecolor == "pink")
             {
                 return DefaultTileColors.Pink;
             }
-            // If the average color has blue elements, prioritize teal
-            if (tilename.Contains("winspy"))
+            if (tilename.Contains("winspy") || customtilecolor == "Purple" || customtilecolor == "purple")
             {
                 return DefaultTileColors.Purple;
             }
-            // If the average color has blue elements, prioritize teal
-            if (tilename.Contains("Downloads") || tilename.Contains("Videos") || tilename.Contains("File Explorer") || tilename.Contains("explorer"))
+            if (tilename.Contains("Downloads") || tilename.Contains("Videos") || tilename.Contains("File Explorer") || tilename.Contains("Windows Explorer") || customtilecolor == "Teal" || customtilecolor == "teal")
             {
                 return DefaultTileColors.Teal;
             }
-            // If the average color has blue elements, prioritize teal
-            if (tilename.Contains("Pictures") || tilename.Contains("Music") || tilename.Contains("Desktop"))
+            if (tilename.Contains("Pictures") || tilename.Contains("Music") || tilename.Contains("Desktop") || customtilecolor == "Blue" || customtilecolor == "blue")
             {
                 return DefaultTileColors.Blue;
             }
-            // If the average color has blue elements, prioritize teal
-            if (tilename.Contains("Documents") || tilename.Contains("Command Prompt") || tilename.Contains("cmd"))
+            if (tilename.Contains("Documents") || tilename.Contains("Command Prompt") || tilename.Contains("cmd") || customtilecolor == "Gray" || customtilecolor == "gray")
             {
                 return DefaultTileColors.Gray;
+            }
+            if (customtilecolor == "Black" || customtilecolor == "black")
+            {
+                return DefaultTileColors.Black;
+            }
+            if (customtilecolor == "Pumpkin" || customtilecolor == "pumpkin")
+            {
+                return DefaultTileColors.Pumpkin;
+            }
+            if (customtilecolor == "PaleGreen" || customtilecolor == "palegreen" || customtilecolor == "Palegreen")
+            {
+                return DefaultTileColors.PaleGreen;
+            }
+            if (customtilecolor == "LightGreen" || customtilecolor == "lightgreen" || customtilecolor == "Lightgreen")
+            {
+                return DefaultTileColors.LightGreen;
             }
             else
             {

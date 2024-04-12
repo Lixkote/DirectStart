@@ -7,6 +7,7 @@
         public string LeftGradient { get; set; }
         public string RightGradient { get; set; }
         public string Border { get; set; }
+        public string CustomColor { get; set; }
         public string Title { get; set; }
         public string PathMetro { get; set; }
         public System.Windows.Media.ImageSource Icon { get; set; }

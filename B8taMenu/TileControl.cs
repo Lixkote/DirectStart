@@ -11,6 +11,20 @@ namespace B8TAM
     public class TileControl : Button
     {
         /// <summary>Identifies the <see cref="Title"/> dependency property.</summary>
+        public static readonly DependencyProperty SizeProperty
+            = DependencyProperty.Register(nameof(Size),
+                                          typeof(string),
+                                          typeof(TileControl),
+                                          new PropertyMetadata(default(string)));
+
+        public string Size
+        {
+            get => (string)this.GetValue(SizeProperty);
+            set => this.SetValue(SizeProperty, value);
+        }
+
+
+        /// <summary>Identifies the <see cref="Title"/> dependency property.</summary>
         public static readonly DependencyProperty TitleProperty
             = DependencyProperty.Register(nameof(Title),
                                           typeof(string),

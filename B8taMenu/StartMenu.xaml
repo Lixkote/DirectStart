@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:classic="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Classic"
+        xmlns:aero="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:B8TAM" x:Class="B8TAM.StartMenu"
         xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
@@ -70,7 +71,7 @@
                 <ColumnDefinition Width="267"/>
                 <ColumnDefinition Width="266"/>
             </Grid.ColumnDefinitions>
-            <Border x:Name="BackgroundBorder" BorderBrush="{x:Static classic:ClassicBorderDecorator.ClassicBorderBrush}" BorderThickness="0,1,1,1" Margin="0,0,5,0" Grid.ColumnSpan="2"/>
+            <Border x:Name="BackgroundBorder" BorderThickness="0,1,1,1" Margin="0,0,5,0" Grid.ColumnSpan="2"/>
             <ItemsControl dd:DragDrop.IsDropTarget="True" dd:DragDrop.UseVisualSourceItemSizeForDragAdorner="True" dd:DragDrop.IsDragSource="True" x:Name="TilesHost" Grid.Column="1" Margin="0,3,0,0">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -79,19 +80,18 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.Resources>
                     <DataTemplate DataType="{x:Type local:Tile}">
-                        <local:TileControl Click="Tile_Click" Style="{DynamicResource ColoredTile}" Icon="{Binding Icon}" Title="{Binding Title}" Width="120" Height="120" FontSize="6" HorizontalAlignment="Left" Margin="3,5,5,3">
+                        <local:TileControl x:Name="TileC" Click="Tile_Click" Size="{Binding Size}" Style="{DynamicResource ColoredTile}" Icon="{Binding Icon}" Title="{Binding Title}" FontSize="6" HorizontalAlignment="Left" Margin="3,5,5,3" Width="NaN" Height="NaN" VerticalAlignment="Top">
                             <local:TileControl.ContextMenu>
                                 <ContextMenu>
-                                    <MenuItem x:Name="UnpinTile">Unpin from Start</MenuItem>
-                                    <MenuItem>Pin to taskbar</MenuItem>
-                                    <MenuItem>Open new window</MenuItem>
-                                    <MenuItem>Run as administrator</MenuItem>
-                                    <MenuItem>Open file location</MenuItem>
+                                    <MenuItem x:Name="UnpinTile" Header="Unpin from Start"></MenuItem>
+                                    <MenuItem Header="Pin to taskbar"></MenuItem>
+                                    <MenuItem Header="Run as administrator"></MenuItem>
+                                    <MenuItem Header="Open file location"></MenuItem>
                                     <MenuItem Header="Resize">
-                                        <MenuItem Click="ResizeTileSmall_Click" x:Name="ResizeTileSmall">Small</MenuItem>
-                                        <MenuItem Click="ResizeTileNormal_Click" x:Name="ResizeTileNormal">Normal</MenuItem>
-                                        <MenuItem Click="ResizeTileWide_Click" x:Name="ResizeTileWide">Wide</MenuItem>
-                                        <MenuItem Click="ResizeTileLarge_Click" x:Name="ResizeTileLarge">Large</MenuItem>
+                                        <MenuItem Click="ResizeTileSmall_Click" x:Name="ResizeTileSmall" Header="Small"></MenuItem>
+                                        <MenuItem Click="ResizeTileNormal_Click" x:Name="ResizeTileNormal" Header="Normal"></MenuItem>
+                                        <MenuItem Click="ResizeTileWide_Click" x:Name="ResizeTileWide" Header="Wide"></MenuItem>
+                                        <MenuItem Click="ResizeTileLarge_Click" x:Name="ResizeTileLarge" Header="Large"></MenuItem>
                                     </MenuItem>
                                 </ContextMenu>
                             </local:TileControl.ContextMenu>
@@ -102,7 +102,7 @@
             <Grid Margin="7">
                 <Grid>
                     <Grid x:Name="GridPrograms" Margin="0,0,0,81" >
-                        <ScrollViewer x:Name="ProgramsListScroll" Style="{x:Null}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"  Grid.Row="0" Grid.Column="1" Margin="5,0,0,0">
+                        <ScrollViewer x:Name="ProgramsListScroll" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"  Grid.Row="0" Grid.Column="1" Margin="5,0,0,0">
                             <ItemsControl x:Name="ProgramsList" HorizontalContentAlignment="Stretch" BorderThickness="0" ItemsSource="{Binding Programs}" Background="Transparent" >
                                 <ItemsControl.Resources>
                                     <DataTemplate x:Name="listViewData" DataType="{x:Type local:StartMenuLink}">
@@ -170,7 +170,7 @@
                                         <MenuItem x:Name="sleepPC" Header="Sleep" Click="sleepPC_Click"/>
                                         <MenuItem x:Name="shutdownPC" Header="Shut down" Click="shutdownPC_Click"/>
                                         <MenuItem x:Name="restartPC" Header="Restart" Click="restartPC_Click"/>
-                                        <MenuItem x:Name="ExitDS" Header="Exit DirectStart" Click="ExitDS_Click"/>
+                                        <MenuItem x:Name="ExitDS" Header="Exit B8taMenu" Click="ExitDS_Click"/>
                                     </local:ImmesiveContextMenu>
                                 </FrameworkElement.ContextMenu>
                             </ToggleButton>

@@ -138,27 +138,6 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <Style TargetType="{x:Type MenuItem}" >
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type MenuItem}">
-                    <Border x:Name="Bd" Padding="40,4,40,4" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True" Uid="Border_38">
-                        <ContentPresenter x:Name="ContentPresenter"  Content="{TemplateBinding Header}" Grid.Column="1" ContentSource="Header" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Uid="ContentPresenter_33"/>
-                    </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsHighlighted" Value="True">
-                            <Setter Property="Background" TargetName="Bd">
-                                <Setter.Value>
-                                    <SolidColorBrush Color="#E6E6E6"></SolidColorBrush>
-                                </Setter.Value>
-                            </Setter>
-                            <Setter Property="BorderBrush" TargetName="Bd" Value="Transparent"/>
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
 
 
     <Style x:Key="UserMenuStyle" TargetType="{x:Type local:ImmesiveContextMenu}">
@@ -514,6 +493,7 @@
                             BorderThickness="2"
                             Opacity="0"
                             SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                       
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="Button.IsPressed" Value="True">
@@ -534,6 +514,27 @@
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Width" Value="140" />
         <Setter Property="local:ControlHelper.MouseOverBorderBrush" Value="{x:Null}" />
+    </Style>
+    <Style TargetType="{x:Type MenuItem}" >
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type MenuItem}">
+                    <Border x:Name="Bd" Padding="40,4,40,4" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True" Uid="Border_38">
+                        <ContentPresenter x:Name="ContentPresenter"  Content="{TemplateBinding Header}" Grid.Column="1" ContentSource="Header" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Uid="ContentPresenter_33"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsHighlighted" Value="True">
+                            <Setter Property="Background" TargetName="Bd">
+                                <Setter.Value>
+                                    <SolidColorBrush Color="#E6E6E6"></SolidColorBrush>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="BorderBrush" TargetName="Bd" Value="Transparent"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
     <Style x:Key="ColoredTile" TargetType="local:TileControl">
         <Style.Resources>
@@ -558,7 +559,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:TileControl">
-                    <Grid>
+                    <Grid x:Name="RootGrid">
                         <Border x:Name="PART_Border"
                             Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
@@ -571,13 +572,13 @@
                                     <ContentPresenter RecognizesAccessKey="True" />
                                     <TextBlock x:Name="size" Text="48" Visibility="Collapsed"></TextBlock>
                                     <TextBlock x:Name="path" Text="{Binding EXEPath}" Visibility="Collapsed"></TextBlock>
-                                    <Image Source="{Binding Icon, RelativeSource={RelativeSource TemplatedParent}}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,28" Width="48" Height="48" Stretch="Fill">
+                                    <Image x:Name="Icon" Source="{Binding Icon, RelativeSource={RelativeSource TemplatedParent}}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,28" Width="48" Height="48" Stretch="Fill">
                                     </Image>
                                     <TextBlock VerticalAlignment="Center"
                                            FontSize="{TemplateBinding CountFontSize}"
                                            Text="{TemplateBinding Count}" />
                                 </StackPanel>
-                                <TextBlock Margin="14,0,0,4"
+                                <TextBlock x:Name="TitleBlock" Margin="14,0,0,4"
                                             FontSize="12"
                                             
                                             FontFamily="Segoe UI"
@@ -604,6 +605,28 @@
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Opacity" Value=".55" />
+                        </Trigger>
+                        <Trigger Property="Size" Value="Small">
+                            <Setter TargetName="RootGrid" Property="Width" Value="56"/>
+                            <Setter TargetName="RootGrid" Property="Height" Value="56"/>
+                            <Setter TargetName="Icon" Property="VerticalAlignment" Value="Center"/>
+                            <Setter TargetName="Icon" Property="HorizontalAlignment" Value="Center"/>
+                            <Setter TargetName="Icon" Property="Height" Value="32"/>
+                            <Setter TargetName="Icon" Property="Width" Value="32"/>
+                            <Setter TargetName="Icon" Property="Margin" Value="0"/>
+                            <Setter TargetName="TitleBlock" Property="Visibility" Value="Collapsed"/>
+                        </Trigger>
+                        <Trigger Property="Size" Value="Wide">
+                            <Setter TargetName="RootGrid" Property="Width" Value="248"/>
+                            <Setter TargetName="RootGrid" Property="Height" Value="120"/>
+                        </Trigger>
+                        <Trigger Property="Size" Value="Large">
+                            <Setter TargetName="RootGrid" Property="Width" Value="248"/>
+                            <Setter TargetName="RootGrid" Property="Height" Value="248"/>
+                        </Trigger>
+                        <Trigger Property="Size" Value="Normal">
+                            <Setter TargetName="RootGrid" Property="Width" Value="120"/>
+                            <Setter TargetName="RootGrid" Property="Height" Value="120"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
