@@ -3,6 +3,7 @@ using System.Threading;
 using System.IO;
 using System.Windows;
 using B8TAM;
+using System.Diagnostics;
 
 namespace AFSM
 {
@@ -95,6 +96,7 @@ namespace AFSM
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString(), "B8taMenu had an issue loading the config file or its values.");
+                Debug.WriteLine(ex.ToString(), "B8taMenu had an issue loading the config file or its values.");
             }
 
             // Initialize your main window or any other startup logic
