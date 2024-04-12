@@ -41,6 +41,6 @@ Source: "C:\Users\lixkote\Documents\GitHub\B8taMenu\ConfigurationTemplate\*"; De
 
 [Icons]
 Name: "{commondesktop}\Drop items here to pin them to B8taMenu"; Filename: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\User Pinned\StartMenu"; 
-Name: "{commondesktop}\B8taMenu tiles configuration file"; Filename: "{%HOMEPATH}\DirectStart\Tiles\Layout.xml"; 
+Name: "{commondesktop}\B8taMenu tiles configuration file"; Filename: "{%HOMEPATH}\B8taMenu\Tiles\Layout.xml"; 
 Name: "{commondesktop}\Run B8taMenu"; Filename: "{autopf}\{#MyAppName}\Start menu.exe"; 
 
