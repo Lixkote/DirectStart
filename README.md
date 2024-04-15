@@ -1,4 +1,4 @@
-# B8taMenu (DirectStart)
+# B8taMenu
 Recreation of the Windows 10 Technical Preview/Windows RT Update 3's DirectUI based start menu.
 
 The tile layout is based around an user editable xml, which is stored in your User folder, in the DirectStart folder.

@@ -30,7 +30,7 @@ namespace AFSM
             base.OnStartup(e);
 
             // Read the text file from %HOMEPATH%
-            string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "DirectStart", "Tiles", "config.txt");
+            string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "B8taMenu", "Tiles", "config.txt");
             try
             {
                 if (File.Exists(filePath))
