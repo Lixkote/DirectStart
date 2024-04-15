@@ -122,7 +122,9 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Reveal.cs" />
     <Compile Include="SysImageList.cs" />
+    <Compile Include="SystemScaling.cs" />
     <Compile Include="Tile.cs" />
     <Compile Include="TileColor.cs" />
     <Compile Include="TileColorCalculator.cs" />
@@ -153,6 +155,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Skins\Fluent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Skins\Seven.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Skins\Vista.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -214,6 +224,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\lhbg.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\SearchBoxGlyph.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

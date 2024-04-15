@@ -61,30 +61,50 @@ namespace B8TAM
 			if (code < 0)
 				return CallNextHookEx(_mouseHook, code, wParam, lParam);
 
-			if (code == this.HC_ACTION)
-			{
-				KBDLLHOOKSTRUCT objKeyInfo = (KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(KBDLLHOOKSTRUCT));
+            if (code == this.HC_ACTION)
+            {
+                KBDLLHOOKSTRUCT objKeyInfo = (KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(KBDLLHOOKSTRUCT));
 
-				if (wParam == (IntPtr)0x0100) // Key down
-				{
-					pressedKeys.Add(objKeyInfo.key); // Add the key to the set of pressed keys
+                if (wParam == (IntPtr)0x0100) // Key down
+                {
+                    pressedKeys.Add(objKeyInfo.key); // Add the key to the set of pressed keys
+                    stopwatch.Restart(); // Restart the stopwatch
+                }
+                else if (wParam == (IntPtr)0x0101) // Key up
+                {
+                    stopwatch.Stop(); // Stop the stopwatch
 
-				}
-				else if (wParam == (IntPtr)0x0101) // Key up
-				{
+                    if (pressedKeys.Count == 1 && (objKeyInfo.key == Keys.LWin || objKeyInfo.key == Keys.RWin))
+                    {
+                        // Introduce a small delay (e.g., 100 milliseconds) to ensure the key is held for a minimum time
+                        if (stopwatch.ElapsedMilliseconds <= 100)
+                        {
+                            bool anyKeyPressed = false;
 
-					if (pressedKeys.Count == 1 && (objKeyInfo.key == Keys.LWin || objKeyInfo.key == Keys.RWin))
-					{
-						// Introduce a small delay (e.g., 100 milliseconds) to ensure the key is held for a minimum time
+                            foreach (Key key in Enum.GetValues(typeof(Key)))
+                            {
+                                if (key != Key.None && key != Key.LWin && key != Key.RWin && Keyboard.IsKeyDown(key))
+                                {
+                                    anyKeyPressed = true;
+                                    break;
+                                }
+                            }
+                            // Only execute the actions if no other keys are pressed
+                            if (!anyKeyPressed)
+                            {
+                                StartTriggered?.Invoke(this, EventArgs.Empty);
+                                return 1;
+                            }
+                        }
+                    }
 
-						StartTriggered(this, null);
-						pressedKeys.Clear();
-						return 1;
-					}
-				}
-			}
+                    pressedKeys.Clear();
+                }
+            }
 
-			return CallNextHookEx(_mouseHook, code, wParam, lParam);
+
+
+            return CallNextHookEx(_mouseHook, code, wParam, lParam);
 		}
 
 		public void Close()

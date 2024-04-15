@@ -9,7 +9,7 @@
         xmlns:local="clr-namespace:B8TAM" x:Class="B8TAM.StartMenu"
         xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
         mc:Ignorable="d"
-        Title="Start menu" Width="533" SizeToContent="Manual" Height="520" Left="0" x:Name="Menu" DataContext="{Binding ElementName=Menu}"
+        Title="Start menu" Width="533" SizeToContent="Manual" Height="519.9" Left="0" x:Name="Menu" DataContext="{Binding ElementName=Menu}"
 		AllowsTransparency="True" WindowStyle="None" Visibility="Visible" 
 		ShowInTaskbar="False" Activated="Window_Activated" Deactivated="Menu_Deactivated" FontFamily="Segoe UI" Topmost="True" BorderThickness="1" Loaded="Menu_Loaded" Background="{x:Null}" Margin="0">
     <Window.Resources>
@@ -327,13 +327,13 @@
                     </Grid>
 
 
-                    <ToggleButton x:Name="AppsToggle" Height="34" VerticalAlignment="Bottom" Margin="0,0,0,40" Checked="HandleCheck" Unchecked="HandleUnchecked" HorizontalContentAlignment="Left">
+                    <ToggleButton Style="{DynamicResource AllAppsToggleButtonStyle}" x:Name="AppsToggle" Height="34" VerticalAlignment="Bottom" Margin="0,0,0,40" Checked="HandleCheck" Unchecked="HandleUnchecked" HorizontalContentAlignment="Left">
                         <Grid>
                             <TextBlock x:Name="ToggleButtonText" Style="{StaticResource GDIText}" Text="All Apps"  Height="16" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="40,0,0,0" Foreground="White"/>
                             <TextBlock x:Name="ToggleButtonGlyph" Style="{StaticResource AppsGlyphStyleText}"  VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,0,0,0" Foreground="White"/>
                         </Grid>
                     </ToggleButton>
-                    <Border Background="White" BorderBrush="#33000000" BorderThickness="1" VerticalAlignment="Bottom" Height="34">
+                    <Border x:Name="SearchBorder" Style="{StaticResource SearchGridBG}" BorderThickness="1" VerticalAlignment="Bottom" Height="34">
                         <Grid>
                             <Image x:Name="SearchGlyph" Style="{StaticResource SearchGlyphStyle}" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" Height="34" Width="12" />
                             <TextBlock  Style="{StaticResource GDIText}" HorizontalAlignment="Stretch" Text="Search everywhere" VerticalAlignment="Center" Margin="21,0,0,0"

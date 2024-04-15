@@ -116,7 +116,11 @@ namespace AFSM
                     return "Skins/Metro.xaml";
                 case "classic":
                     return "Skins/Classic.xaml";
-                case "aero":
+                case "vista":
+                    return "Skins/Vista.xaml";
+                case "seven":
+                    return "Skins/Seven.xaml";
+                case "hillel":
                     return "Skins/Aero.xaml";
                 case "8cp":
                     return "Skins/8CP.xaml";
