@@ -20,12 +20,12 @@ AppUpdatesURL={#MyAppURL}
 DefaultDirName={autopf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
-LicenseFile=C:\Users\lixkote\Documents\GitHub\B8taMenu\Installer\license.txt
+LicenseFile=.\license.txt
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
-OutputDir=C:\Users\lixkote\Desktop\B8taMenu Installer
+OutputDir=..\InstallerBin
 OutputBaseFilename=B8taMenuSetup
-SetupIconFile=C:\Users\lixkote\Documents\GitHub\B8taMenu\Installer\install.ico
+SetupIconFile=.\install.ico
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
@@ -35,8 +35,8 @@ MinVersion=6.0
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
-Source: "C:\Users\lixkote\Documents\GitHub\B8taMenu\B8taMenu\bin\Debug\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "C:\Users\lixkote\Documents\GitHub\B8taMenu\ConfigurationTemplate\*"; DestDir: "{%HOMEPATH}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\B8taMenu\bin\Debug\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\ConfigurationTemplate\*"; DestDir: "{%HOMEPATH}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
