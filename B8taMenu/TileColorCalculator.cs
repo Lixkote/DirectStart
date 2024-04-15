@@ -131,7 +131,7 @@ namespace B8TAM
             return System.Drawing.Color.FromArgb((int)red, (int)green, (int)blue);
         }
 
-        private static DefaultTileColors FindClosestColor(System.Drawing.Color averageColor, String tilename, string customtilecolor)
+        private static DefaultTileColors FindClosestColor(System.Drawing.Color averageColor, string tilename, string customtilecolor)
         {
             // Calculate distance to each predefined color and find the closest one
             double minDistance = double.MaxValue;
@@ -149,45 +149,51 @@ namespace B8TAM
                     closestColor = color;
                 }
             }
-            if (tilename.Contains("GitHub Desktop") || customtilecolor == "Pink" || customtilecolor == "pink")
+
+            // Overrides for specific tile names:
+            if (new[] { "GitHub Desktop" }.Contains(tilename))
             {
                 return DefaultTileColors.Pink;
             }
-            if (tilename.Contains("winspy") || customtilecolor == "Purple" || customtilecolor == "purple")
+            if (new[] { "winspy" }.Contains(tilename))
             {
                 return DefaultTileColors.Purple;
             }
-            if (tilename.Contains("Downloads") || tilename.Contains("Videos") || tilename.Contains("File Explorer") || tilename.Contains("Windows Explorer") || customtilecolor == "Teal" || customtilecolor == "teal")
+            if (new[] { "Downloads", "Videos", "File Explorer", "Windows Explorer" }.Contains(tilename))
             {
                 return DefaultTileColors.Teal;
             }
-            if (tilename.Contains("Pictures") || tilename.Contains("Music") || tilename.Contains("Desktop") || customtilecolor == "Blue" || customtilecolor == "blue")
+            if (new[] { "Pictures", "Music", "Desktop" }.Contains(tilename))
             {
                 return DefaultTileColors.Blue;
             }
-            if (tilename.Contains("Documents") || tilename.Contains("Command Prompt") || tilename.Contains("cmd") || customtilecolor == "Gray" || customtilecolor == "gray")
+            if (new[] { "Documents", "Command Prompt", "cmd" }.Contains(tilename))
             {
                 return DefaultTileColors.Gray;
             }
-            if (customtilecolor == "Black" || customtilecolor == "black")
+
+            switch (customtilecolor.ToLower())
             {
-                return DefaultTileColors.Black;
-            }
-            if (customtilecolor == "Pumpkin" || customtilecolor == "pumpkin")
-            {
-                return DefaultTileColors.Pumpkin;
-            }
-            if (customtilecolor == "PaleGreen" || customtilecolor == "palegreen" || customtilecolor == "Palegreen")
-            {
-                return DefaultTileColors.PaleGreen;
-            }
-            if (customtilecolor == "LightGreen" || customtilecolor == "lightgreen" || customtilecolor == "Lightgreen")
-            {
-                return DefaultTileColors.LightGreen;
-            }
-            else
-            {
-                return closestColor;
+                case "pink":
+                    return DefaultTileColors.Pink;
+                case "purple":
+                    return DefaultTileColors.Purple;
+                case "teal":
+                    return DefaultTileColors.Teal;
+                case "blue":
+                    return DefaultTileColors.Blue;
+                case "gray":
+                    return DefaultTileColors.Gray;
+                case "black":
+                    return DefaultTileColors.Black;
+                case "pumpkin":
+                    return DefaultTileColors.Pumpkin;
+                case "palegreen":
+                    return DefaultTileColors.PaleGreen;
+                case "lightgreen":
+                    return DefaultTileColors.LightGreen;
+                default:
+                    return closestColor;
             }
         }
 
