@@ -1,4 +1,4 @@
-# B8taMenu
+# DirectStart
 Recreation of the Windows 10 Technical Preview/Windows RT Update 3's DirectUI based start menu.
 
 The tile layout is based around an user editable xml, which is stored in your User folder, in the DirectStart folder.
@@ -13,7 +13,7 @@ Supported operating systems:
 - All Windows 10 builds
 - Windows 11 (With ExplorerPatcher)
 
-Untested but thereotically supported:
+Will be supported in the future:
 - Windows 7
 - Windows 8
 - Windows Vista
@@ -21,6 +21,7 @@ Untested but thereotically supported:
 Credits:
 - Nazgul07 for AFSM (used as base for this project):
 https://github.com/Nazgul07/AFSM
+- Splitwirez for Start9
 
 Screenshots: 
 
