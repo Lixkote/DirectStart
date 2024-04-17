@@ -30,7 +30,7 @@ namespace AFSM
             base.OnStartup(e);
 
             // Read the text file from %HOMEPATH%
-            string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "B8taMenu", "Tiles", "config.txt");
+            string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "DirectStart", "Tiles", "config.txt");
             try
             {
                 if (File.Exists(filePath))
@@ -42,6 +42,7 @@ namespace AFSM
                     string theme = null;
                     string profilePictureShape = null;
                     string forceFillStartButton = null;
+                    string retrobarfix = null;
 
                     // Parse each line of the config file
                     foreach (string line in lines)
@@ -63,6 +64,9 @@ namespace AFSM
                                     break;
                                 case "forcefillstartbutton":
                                     forceFillStartButton = value;
+                                    break;
+                                case "RetroBarFix":
+                                    retrobarfix = value;
                                     break;
                                 default:
                                     // Handle unknown keys if necessary
@@ -91,6 +95,7 @@ namespace AFSM
                     // Store profilePictureShape and forceFillStartButton in application-level resources
                     this.Resources["ProfilePictureShape"] = profilePictureShape;
                     this.Resources["ForceFillStartButton"] = forceFillStartButton;
+                    this.Resources["RetroBarFix"] = retrobarfix;
                 }
             }            
             catch (Exception ex)

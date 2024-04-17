@@ -327,7 +327,7 @@
                     </Grid>
 
 
-                    <ToggleButton Style="{DynamicResource AllAppsToggleButtonStyle}" x:Name="AppsToggle" Height="34" VerticalAlignment="Bottom" Margin="0,0,0,40" Checked="HandleCheck" Unchecked="HandleUnchecked" HorizontalContentAlignment="Left">
+                    <ToggleButton x:Name="AppsToggle" Height="34" VerticalAlignment="Bottom" Margin="0,0,0,40" Checked="HandleCheck" Unchecked="HandleUnchecked" HorizontalContentAlignment="Left">
                         <Grid>
                             <TextBlock x:Name="ToggleButtonText" Style="{StaticResource GDIText}" Text="All Apps"  Height="16" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="40,0,0,0" Foreground="White"/>
                             <TextBlock x:Name="ToggleButtonGlyph" Style="{StaticResource AppsGlyphStyleText}"  VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,0,0,0" Foreground="White"/>

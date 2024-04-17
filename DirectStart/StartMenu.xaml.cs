@@ -44,7 +44,9 @@ namespace B8TAM
 		private List<SourceType> sourceTypes;
 		private ObservableCollection<CountEntry> countEntries;
 		string forceFillStartButton;
-		string profilePictureShape;
+        string isretrobarfix;
+        string profilePictureShape;
+		double taskbarheightinpx;
 
 
 
@@ -137,8 +139,16 @@ namespace B8TAM
 			var desktopWorkingArea = SystemParameters.WorkArea;
 			// Get the screen
 			Screen screen = Screen.FromHandle(new System.Windows.Interop.WindowInteropHelper(this).Handle);
-			// Get the taskbar height
-			double taskbarheightinpx = SystemParameters.PrimaryScreenHeight - screen.WorkingArea.Height;
+            // Get the taskbar height
+            isretrobarfix = (string)System.Windows.Application.Current.Resources["RetroBarFix"];
+            if (isretrobarfix == "true")
+            {
+                taskbarheightinpx = 30;
+            }
+            else
+            {
+                taskbarheightinpx = SystemParameters.PrimaryScreenHeight - screen.WorkingArea.Height;
+            }
 			double taskbarwidthinpx = SystemParameters.PrimaryScreenWidth - screen.WorkingArea.Width;
 			var taskbarPosition = GetTaskbarPosition.Taskbar.Position;
             Version osVersion = Environment.OSVersion.Version;
