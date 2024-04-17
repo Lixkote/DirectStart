@@ -25,6 +25,7 @@ using System.Windows.Media.Animation;
 using System.Xml;
 using System.Xml.Serialization;
 using Color = System.Windows.Media.Color;
+using AFSM;
 
 namespace B8TAM
 {
@@ -699,7 +700,6 @@ namespace B8TAM
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
-			this.Close();
         }
 
         private void UserImageButton_Click(object sender, RoutedEventArgs e)
@@ -726,7 +726,7 @@ namespace B8TAM
 
 		private void ExitDS_Click(object sender, RoutedEventArgs e)
         {
-			this.Close();
+            Environment.Exit(0);
         }
 
         private void Menu_Loaded(object sender, RoutedEventArgs e)

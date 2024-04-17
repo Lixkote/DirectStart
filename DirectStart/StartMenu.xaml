@@ -181,7 +181,7 @@
                                         <MenuItem x:Name="sleepPC" Header="Sleep" Click="sleepPC_Click"/>
                                         <MenuItem x:Name="shutdownPC" Header="Shut down" Click="shutdownPC_Click"/>
                                         <MenuItem x:Name="restartPC" Header="Restart" Click="restartPC_Click"/>
-                                        <MenuItem x:Name="ExitDS" Header="Exit B8taMenu" Click="ExitDS_Click"/>
+                                        <MenuItem x:Name="ExitDS" Header="Exit DirectStart" Click="ExitDS_Click"/>
                                     </local:ImmesiveContextMenu>
                                 </FrameworkElement.ContextMenu>
                             </ToggleButton>
