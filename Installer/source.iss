@@ -24,11 +24,12 @@ LicenseFile=.\license.txt
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
 OutputDir=..\InstallerBin
-OutputBaseFilename=B8taMenuSetup
+OutputBaseFilename=windows8.1-b8tamenu-amd64_setup
 SetupIconFile=.\install.ico
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
+WizardImageFile=.\WizardImage.bmp
 MinVersion=6.0
 
 [Languages]
@@ -42,5 +43,5 @@ Source: "..\ConfigurationTemplate\*"; DestDir: "{%HOMEPATH}"; Flags: ignoreversi
 [Icons]
 Name: "{commondesktop}\Drop items here to pin them to B8taMenu"; Filename: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\User Pinned\StartMenu"; 
 Name: "{commondesktop}\B8taMenu tiles configuration file"; Filename: "{%HOMEPATH}\B8taMenu\Tiles\Layout.xml"; 
-Name: "{commondesktop}\Run B8taMenu"; Filename: "{autopf}\{#MyAppName}\Start menu.exe"; 
+Name: "{commondesktop}\B8taMenu"; Filename: "{autopf}\{#MyAppName}\Start menu.exe"; 
 
