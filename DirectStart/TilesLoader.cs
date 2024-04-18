@@ -102,7 +102,7 @@ namespace B8TAM
         }
         public void LoadTileGroups(ObservableCollection<Tile> tilesCollection)
         {
-            string configFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "B8taMenu", "Tiles", "Layout.xml");
+            string configFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "DirectStart", "Tiles", "Layout.xml");
 
             if (File.Exists(configFile))
             {
