@@ -104,6 +104,7 @@
     </ApplicationDefinition>
     <Compile Include="BlurEffect.cs" />
     <Compile Include="ControlHelper.cs" />
+    <Compile Include="DirectHook.cs" />
     <Compile Include="DUIColorHelper.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="FrequentAppsHelper.cs" />
