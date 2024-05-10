@@ -135,7 +135,147 @@ namespace B8TAM
             }
         }
 
-		private void AdjustToTaskbar()
+        private double GetTaskbarHeight()
+        {
+            // First, try to get taskbar height using Screen class
+            double taskbarHeight = GetTaskbarHeightUsingScreenClass();
+
+            // If the taskbar height obtained is non-negative, return it
+            if (taskbarHeight >= 0)
+                return taskbarHeight;
+
+            // If the taskbar height obtained is negative, try an alternate method
+            taskbarHeight = GetTaskbarHeightUsingShell32();
+
+            return taskbarHeight;
+        }
+
+        private double GetTaskbarHeightUsingScreenClass()
+        {
+            try
+            {
+                // Get the working area of the screen (excluding the taskbar)
+                Rectangle workingArea = Screen.PrimaryScreen.WorkingArea;
+
+                // Get the total area of the screen
+                Rectangle screenArea = Screen.PrimaryScreen.Bounds;
+
+                // Calculate the taskbar height by subtracting the working area height from the total screen height
+                double taskbarHeight = screenArea.Height - workingArea.Height;
+
+                return taskbarHeight;
+            }
+            catch
+            {
+                // Handle any exceptions gracefully
+                return -1;
+            }
+        }
+
+        private double GetTaskbarHeightUsingShell32()
+        {
+            try
+            {
+                APPBARDATA appBarData = new APPBARDATA();
+                appBarData.cbSize = (uint)Marshal.SizeOf(appBarData);
+                IntPtr result = SHAppBarMessage(ABM_GETTASKBARPOS, ref appBarData);
+                if (result == IntPtr.Zero)
+                    return -1;
+
+                RECT taskbarRect = appBarData.rc;
+                return taskbarRect.Bottom - taskbarRect.Top;
+            }
+            catch
+            {
+                // Handle any exceptions gracefully
+                return -1;
+            }
+        }
+
+        // P/Invoke declarations
+        [StructLayout(LayoutKind.Sequential)]
+        private struct APPBARDATA
+        {
+            public uint cbSize;
+            public IntPtr hWnd;
+            public uint uCallbackMessage;
+            public uint uEdge;
+            public RECT rc;
+            public IntPtr lParam;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct RECT
+        {
+            public int Left;
+            public int Top;
+            public int Right;
+            public int Bottom;
+        }
+
+        [DllImport("shell32.dll")]
+        private static extern IntPtr SHAppBarMessage(uint dwMessage, ref APPBARDATA pData);
+
+        private const uint ABM_GETTASKBARPOS = 5;
+
+        private double GetTaskbarWidth()
+        {
+            // First, try to get taskbar width using Screen class
+            double taskbarWidth = GetTaskbarWidthUsingScreenClass();
+
+            // If the taskbar width obtained is non-negative, return it
+            if (taskbarWidth >= 0)
+                return taskbarWidth;
+
+            // If the taskbar width obtained is negative, try an alternate method
+            taskbarWidth = GetTaskbarWidthUsingShell32();
+
+            return taskbarWidth;
+        }
+
+        private double GetTaskbarWidthUsingScreenClass()
+        {
+            try
+            {
+                // Get the working area of the screen (excluding the taskbar)
+                Rectangle workingArea = Screen.PrimaryScreen.WorkingArea;
+
+                // Get the total area of the screen
+                Rectangle screenArea = Screen.PrimaryScreen.Bounds;
+
+                // Calculate the taskbar width by subtracting the working area width from the total screen width
+                double taskbarWidth = screenArea.Width - workingArea.Width;
+
+                return taskbarWidth;
+            }
+            catch
+            {
+                // Handle any exceptions gracefully
+                return -1;
+            }
+        }
+
+        private double GetTaskbarWidthUsingShell32()
+        {
+            try
+            {
+                APPBARDATA appBarData = new APPBARDATA();
+                appBarData.cbSize = (uint)Marshal.SizeOf(appBarData);
+                IntPtr result = SHAppBarMessage(ABM_GETTASKBARPOS, ref appBarData);
+                if (result == IntPtr.Zero)
+                    return -1;
+
+                RECT taskbarRect = appBarData.rc;
+                return taskbarRect.Right - taskbarRect.Left;
+            }
+            catch
+            {
+                // Handle any exceptions gracefully
+                return -1;
+            }
+        }
+
+        private void AdjustToTaskbar()
         {
 			var desktopWorkingArea = SystemParameters.WorkArea;
 			// Get the screen
@@ -148,9 +288,9 @@ namespace B8TAM
             }
             else
             {
-                taskbarheightinpx = SystemParameters.PrimaryScreenHeight - screen.WorkingArea.Height;
+                taskbarheightinpx = GetTaskbarHeight();
             }
-			double taskbarwidthinpx = SystemParameters.PrimaryScreenWidth - screen.WorkingArea.Width;
+			double taskbarwidthinpx = GetTaskbarWidth();
 			var taskbarPosition = GetTaskbarPosition.Taskbar.Position;
             Version osVersion = Environment.OSVersion.Version;
 
@@ -206,13 +346,27 @@ namespace B8TAM
 					{
                         StartLogoBottom.Visibility = Visibility.Hidden;
                     }
-					StartLogoBottom.Height = taskbarheightinpx + 1;
-					Menu.Margin = new Thickness(0, 0, 0, taskbarheightinpx);
-                    if (forceFillStartButton == "true")
-                    {
-                        // Windows 8
-                        StartLogoBottom.Visibility = Visibility.Visible;
+					try
+					{
+                        StartLogoBottom.Height = taskbarheightinpx + 1;
+                        Menu.Margin = new Thickness(0, 0, 0, taskbarheightinpx);
+                        if (forceFillStartButton == "true")
+                        {
+                            // Windows 8
+                            StartLogoBottom.Visibility = Visibility.Visible;
+                        }
                     }
+					catch (Exception ex)
+					{
+                        StartLogoBottom.Height = 48 + 1;
+                        Menu.Margin = new Thickness(0, 0, 0, 48);
+                        if (forceFillStartButton == "true")
+                        {
+                            // Windows 8
+                            StartLogoBottom.Visibility = Visibility.Visible;
+                        }
+                        Debug.WriteLine("Taskbar height exception: " + ex.ToString());
+					}
                     break;
 				case GetTaskbarPosition.TaskbarPosition.Left:
 					// Taskbar on left
@@ -291,7 +445,30 @@ namespace B8TAM
 		int maxfrequent = 5;
 		int startfrequent = 0;
 
-		private void GetFrequentsNew()
+        private string GetDisplayNameFromExePath(string exePath)
+        {
+            string displayName = string.Empty;
+
+            try
+            {
+                var fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(exePath);
+                displayName = fileVersionInfo.FileDescription;
+
+                // If display name is longer than 17 characters, get the path without extension
+                if (displayName.Length > 25)
+                {
+                    displayName = Path.GetFileNameWithoutExtension(exePath);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"An error occurred: {ex.Message}", "Error");
+            }
+
+            return displayName;
+        }
+
+        private void GetFrequentsNew()
 		{
 			if (startfrequent <= maxfrequent)
 			{
@@ -323,7 +500,7 @@ namespace B8TAM
 						{
 							Recent.Add(new StartMenuLink
 							{
-								Title = System.IO.Path.GetFileNameWithoutExtension(entry.DecodedName),
+								Title = GetDisplayNameFromExePath(entry.DecodedName),
 								Icon = IconHelper.GetFileIcon(entry.DecodedName),
 								Link = entry.DecodedName
 							});

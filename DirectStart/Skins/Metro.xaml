@@ -21,7 +21,7 @@
     <Style x:Key="IsSkinSupportDuiBackgroundColor" TargetType="{x:Type TextBlock}">
         <!-- False for not support background dui color, true for support background dui color. -->
         <!-- This applies the metro dui color (the one from windows 8.1 start screen) to the start menu background-->
-        <Setter Property="Text" Value="True"></Setter>
+        <Setter Property="Text" Value="False"></Setter>
     </Style>
 
     <Style x:Key="PowerGlyphStyle" TargetType="{x:Type Image}">
@@ -54,7 +54,11 @@
     </Style>
 
     <Style x:Key="StartMenuBackgroundStyle" TargetType="{x:Type Grid}">
-      
+        <Setter Property="Background">
+            <Setter.Value>
+                <ImageBrush ImageSource="pack://siteoforigin:,,,/Resources/demo3.png"/>
+            </Setter.Value>
+        </Setter>
     </Style>
 
 
