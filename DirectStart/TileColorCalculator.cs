@@ -186,6 +186,8 @@ namespace B8TAM
                     return DefaultTileColors.Gray;
                 case "black":
                     return DefaultTileColors.Black;
+				case "red":
+                    return DefaultTileColors.Red;
                 case "pumpkin":
                     return DefaultTileColors.Pumpkin;
                 case "palegreen":

@@ -26,6 +26,8 @@ using System.Xml;
 using System.Xml.Serialization;
 using Color = System.Windows.Media.Color;
 using AFSM;
+using System.IO.Pipes;
+using System.Windows.Threading;
 
 namespace B8TAM
 {
@@ -53,7 +55,47 @@ namespace B8TAM
 
         public ICommand Run => new RunCommand(RunCommand);
 
-		private static Color GetColor(IntPtr pElementName)
+        private void StartPipeServer()
+        {
+            Task.Run(() =>
+            {
+                while (true)
+                {
+                    using (var server = new NamedPipeServerStream("DirectStartPipe", PipeDirection.In, NamedPipeServerStream.MaxAllowedServerInstances))
+                    {
+                        try
+                        {
+                            server.WaitForConnection();
+                            using (var reader = new StreamReader(server))
+                            {
+                                var message = reader.ReadLine();
+                                if (message != null && message.Contains("TRIGGER"))
+                                {
+                                    Dispatcher.Invoke(() => OnStartTriggeredNoArgs());
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Received unknown message: " + message);
+                                }
+                            }
+                        }
+                        catch (IOException ex)
+                        {
+                            // Log or handle the error as needed
+                            Console.WriteLine("Named pipe error: " + ex.Message);
+                        }
+                        catch (Exception ex)
+                        {
+                            // Catch other potential exceptions
+                            Console.WriteLine("Error: " + ex.Message);
+                        }
+                    }
+                }
+            });
+        }
+
+
+        private static Color GetColor(IntPtr pElementName)
 		{
 			var colourset = DUIColorHelper.GetImmersiveUserColorSetPreference(false, false);
 			uint type = DUIColorHelper.GetImmersiveColorTypeFromName(pElementName);
@@ -75,9 +117,10 @@ namespace B8TAM
 			GetPrograms(programs);
 			programs = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.StartMenu), "Programs");
 			GetPrograms(programs);
+            StartPipeServer();
 
 
-			this.sourceTypes = new List<SourceType>()
+            this.sourceTypes = new List<SourceType>()
 			{
 				new SourceType("Program", @"Software\Microsoft\Windows\CurrentVersion\Explorer\UserAssist\{CEBFF5CD-ACE2-4F4F-9178-9926F41749EA}\Count"),
 				new SourceType("Shortcut", @"Software\Microsoft\Windows\CurrentVersion\Explorer\UserAssist\{F4E57C4B-2036-45F0-A9AB-443BCFE33D9F}\Count")
@@ -449,15 +492,18 @@ namespace B8TAM
         {
             string displayName = string.Empty;
 
-            try
-            {
-                var fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(exePath);
-                displayName = fileVersionInfo.FileDescription;
+			try
+			{
+				var fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(exePath);
+				displayName = fileVersionInfo.FileDescription;
 
-                // If display name is longer than 17 characters, get the path without extension
-                if (displayName.Length > 25)
-                {
-                    displayName = Path.GetFileNameWithoutExtension(exePath);
+				// If display name is longer than 17 characters, get the path without extension
+				if (displayName != null)
+				{
+                    if (displayName.Length > 25)
+                    {
+                        displayName = Path.GetFileNameWithoutExtension(exePath);
+                    }
                 }
             }
             catch (Exception ex)
@@ -582,16 +628,31 @@ namespace B8TAM
 			TilesHost.ItemsSource = Tiles;
 		}
 
-		void OnStartTriggered(object sender, EventArgs e)
-		{
-			Visibility = Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
-			if (Visibility == Visibility.Visible)
-			{
-				Show();
-				WindowActivator.ActivateWindow(new System.Windows.Interop.WindowInteropHelper(Menu).Handle);
-				SearchText.Focus();
-			}
-		}
+        void OnStartTriggered(object sender, EventArgs e)
+        {
+            ToggleStartMenu();
+        }
+
+        private void OnStartTriggeredNoArgs()
+        {
+            ToggleStartMenu();
+        }
+
+        private void ToggleStartMenu()
+        {
+            Visibility = Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+            if (Visibility == Visibility.Visible)
+            {
+                Show();
+                WindowActivator.ActivateWindow(new System.Windows.Interop.WindowInteropHelper(Menu).Handle);
+                SearchText.Focus();
+            }
+            else
+            {
+                Hide();
+            }
+        }
+
 
         private void Window_Activated(object sender, EventArgs e)
 		{
@@ -940,7 +1001,54 @@ namespace B8TAM
         {
 
         }
+
+        private void SearchText_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            // Check if any alphanumeric key is pressed
+            if (char.IsLetterOrDigit((char)e.Key))
+            {
+                string rundll32Path = Environment.ExpandEnvironmentVariables(@"%windir%\system32\rundll32.exe");
+                string command = @"-sta {C90FB8CA-3295-4462-A721-2935E83694BA}";
+
+                ProcessStartInfo startInfo = new ProcessStartInfo(rundll32Path, command)
+                {
+                    CreateNoWindow = true,
+                    UseShellExecute = false
+                };
+
+                try
+                {
+                    Process.Start(startInfo);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("An error occurred: " + ex.Message);
+                }
+            }
+        }
+
+        private void SearchText_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string rundll32Path = Environment.ExpandEnvironmentVariables(@"%windir%\system32\rundll32.exe");
+            string command = @"-sta {C90FB8CA-3295-4462-A721-2935E83694BA}";
+
+            ProcessStartInfo startInfo = new ProcessStartInfo(rundll32Path, command)
+            {
+                CreateNoWindow = true,
+                UseShellExecute = false
+            };
+
+            try
+            {
+                Process.Start(startInfo);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("An error occurred: " + ex.Message);
+            }
+        }
     }
+
     public class RunCommand : ICommand
 	{
 		public delegate void ExecuteMethod();

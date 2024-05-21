@@ -342,7 +342,7 @@ Visibility="{Binding Text.IsEmpty, Converter={StaticResource BoolToVis}, Element
                                     <SolidColorBrush Color="#CC000000" Opacity="0.7"/>
                                 </TextBlock.Foreground>
                             </TextBlock>
-                            <TextBox x:Name="SearchText" HorizontalAlignment="Stretch" TextChanged="TextBox_TextChanged" VerticalContentAlignment="Center" Background="Transparent" BorderThickness="0" Margin="15,0,0,0">
+                            <TextBox x:Name="SearchText" HorizontalAlignment="Stretch" TextChanged="SearchText_TextChanged" VerticalContentAlignment="Center" Background="Transparent" BorderThickness="0" Margin="15,0,0,0">
                                 <TextBox.InputBindings>
                                     <KeyBinding Key="Return" 
 		Command="{Binding Run}"

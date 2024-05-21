@@ -4,6 +4,8 @@ using System.IO;
 using System.Windows;
 using B8TAM;
 using System.Diagnostics;
+using System.Linq;
+using System.IO.Pipes;
 
 namespace AFSM
 {
@@ -24,89 +26,122 @@ namespace AFSM
 				Current.Shutdown();
 			}
 		}
+        private void HandleTriggerArgument()
+        {
+            using (var client = new NamedPipeClientStream(".", "DirectStartPipe", PipeDirection.Out))
+            {
+                try
+                {
+                    client.Connect();
+                    using (var writer = new StreamWriter(client))
+                    {
+                        writer.WriteLine("TRIGGER");
+                        writer.Flush();
+                    }
+                }
+                catch (IOException ex)
+                {
+                    // Log or handle the error as needed
+                    Debug.WriteLine("Named pipe error: " + ex.Message);
+                }
+            }
+        }
 
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
-            // Read the text file from %HOMEPATH%
-            string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "DirectStart", "Tiles", "config.txt");
-            try
+            string debug = "false";
+
+            // Check if the trigger argument is passed
+            if (e.Args.Contains("/trigger") || debug == "true")
             {
-                if (File.Exists(filePath))
+                // Handle the trigger functionality
+                HandleTriggerArgument();
+                // Shutdown the application if it was started just to trigger
+                Environment.Exit(0);
+            }
+            else
+            {
+                // Read the text file from %HOMEPATH%
+                string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "DirectStart", "Tiles", "config.txt");
+                try
                 {
-                    // Read the content of the text file
-                    string[] lines = File.ReadAllLines(filePath);
-
-                    // Initialize variables to hold configuration values
-                    string theme = null;
-                    string profilePictureShape = null;
-                    string forceFillStartButton = null;
-                    string retrobarfix = null;
-
-                    // Parse each line of the config file
-                    foreach (string line in lines)
+                    if (File.Exists(filePath))
                     {
-                        string[] parts = line.Split('=');
-                        if (parts.Length == 2)
-                        {
-                            string key = parts[0].Trim();
-                            string value = parts[1].Trim();
+                        // Read the content of the text file
+                        string[] lines = File.ReadAllLines(filePath);
 
-                            // Apply configuration based on the key
-                            switch (key.ToLower())
+                        // Initialize variables to hold configuration values
+                        string theme = null;
+                        string profilePictureShape = null;
+                        string forceFillStartButton = null;
+                        string retrobarfix = null;
+
+                        // Parse each line of the config file
+                        foreach (string line in lines)
+                        {
+                            string[] parts = line.Split('=');
+                            if (parts.Length == 2)
                             {
-                                case "theme":
-                                    theme = value;
-                                    break;
-                                case "profilepictureshape":
-                                    profilePictureShape = value;
-                                    break;
-                                case "forcefillstartbutton":
-                                    forceFillStartButton = value;
-                                    break;
-                                case "RetroBarFix":
-                                    retrobarfix = value;
-                                    break;
-                                default:
-                                    // Handle unknown keys if necessary
-                                    break;
+                                string key = parts[0].Trim();
+                                string value = parts[1].Trim();
+
+                                // Apply configuration based on the key
+                                switch (key.ToLower())
+                                {
+                                    case "theme":
+                                        theme = value;
+                                        break;
+                                    case "profilepictureshape":
+                                        profilePictureShape = value;
+                                        break;
+                                    case "forcefillstartbutton":
+                                        forceFillStartButton = value;
+                                        break;
+                                    case "RetroBarFix":
+                                        retrobarfix = value;
+                                        break;
+                                    default:
+                                        // Handle unknown keys if necessary
+                                        break;
+                                }
                             }
                         }
-                    }
 
-                    // Apply the theme
-                    if (!string.IsNullOrEmpty(theme))
-                    {
-                        string resourceDictionaryPath = GetResourceDictionaryPath(theme);
-                        if (!string.IsNullOrEmpty(resourceDictionaryPath))
+                        // Apply the theme
+                        if (!string.IsNullOrEmpty(theme))
                         {
-                            // Set the ResourceDictionary for the theme
-                            ResourceDictionary skinDictionary = new ResourceDictionary();
-                            skinDictionary.Source = new Uri(resourceDictionaryPath, UriKind.RelativeOrAbsolute);
-                            Resources.MergedDictionaries.Add(skinDictionary);
+                            string resourceDictionaryPath = GetResourceDictionaryPath(theme);
+                            if (!string.IsNullOrEmpty(resourceDictionaryPath))
+                            {
+                                // Set the ResourceDictionary for the theme
+                                ResourceDictionary skinDictionary = new ResourceDictionary();
+                                skinDictionary.Source = new Uri(resourceDictionaryPath, UriKind.RelativeOrAbsolute);
+                                Resources.MergedDictionaries.Add(skinDictionary);
+                            }
+                            else
+                            {
+                                MessageBox.Show("Invalid theme specified in the config file.");
+                            }
                         }
-                        else
-                        {
-                            MessageBox.Show("Invalid theme specified in the config file.");
-                        }
-                    }
 
-                    // Store profilePictureShape and forceFillStartButton in application-level resources
-                    this.Resources["ProfilePictureShape"] = profilePictureShape;
-                    this.Resources["ForceFillStartButton"] = forceFillStartButton;
-                    this.Resources["RetroBarFix"] = retrobarfix;
+                        // Store profilePictureShape and forceFillStartButton in application-level resources
+                        this.Resources["ProfilePictureShape"] = profilePictureShape;
+                        this.Resources["ForceFillStartButton"] = forceFillStartButton;
+                        this.Resources["RetroBarFix"] = retrobarfix;
+                    }
                 }
-            }            
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString(), "B8taMenu had an issue loading the config file or its values.");
-                Debug.WriteLine(ex.ToString(), "B8taMenu had an issue loading the config file or its values.");
-            }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.ToString(), "B8taMenu had an issue loading the config file or its values.");
+                    Debug.WriteLine(ex.ToString(), "B8taMenu had an issue loading the config file or its values.");
+                }
 
-            // Initialize your main window or any other startup logic
-            StartMenu mainWindow = new StartMenu();
-            mainWindow.Show();
+                // Initialize your main window or any other startup logic
+                StartMenu mainWindow = new StartMenu();
+                mainWindow.Show();
+            }            
         }
 
         private string GetResourceDictionaryPath(string themeName)
