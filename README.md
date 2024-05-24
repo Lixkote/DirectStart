@@ -3,8 +3,7 @@
     <img src="https://raw.githubusercontent.com/Lixkote/DirectStart/master/logo.png">
 </p>
 
-**Recreation of the Windows 10 Technical Preview/Windows RT Update 3's DirectUI based start menu.**
-Can be used with RetroBar.
+**Recreation of the DirectUI based start menu.**
 
 Supported operating systems:
 
