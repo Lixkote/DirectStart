@@ -12,9 +12,8 @@ Supported operating systems:
 - Windows 11 (With ExplorerPatcher, RetroBar, or StartAllBack)
 
 Might be supported in the future:
-- Windows 7
-- Windows 8
-- Windows Vista
+- Windows 7 SP1
+- Windows Vista (with Extended Kernel)
 
 ## Screenshots:
 
