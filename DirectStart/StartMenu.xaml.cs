@@ -633,23 +633,29 @@ namespace B8TAM
             ToggleStartMenu();
         }
 
-        private void OnStartTriggeredNoArgs()
+        void OnStartTriggeredNoArgs()
         {
             ToggleStartMenu();
         }
 
-        private void ToggleStartMenu()
+        public async void ToggleStartMenu()
         {
-            Visibility = Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
-            if (Visibility == Visibility.Visible)
+            try
             {
-                Show();
-                WindowActivator.ActivateWindow(new System.Windows.Interop.WindowInteropHelper(Menu).Handle);
-                SearchText.Focus();
+                if (Visibility == Visibility.Visible)
+                {
+                    Hide();
+                }
+                else
+                {
+                    Show();
+                    WindowActivator.ActivateWindow(new System.Windows.Interop.WindowInteropHelper(Menu).Handle);
+                    SearchText.Focus();
+                }
             }
-            else
+            catch (Exception ex)
             {
-                Hide();
+				Debug.WriteLine(ex.ToString());
             }
         }
 

@@ -56,56 +56,55 @@ namespace B8TAM
 		}
 		HashSet<Keys> pressedKeys = new HashSet<Keys>();
 		Stopwatch stopwatch = new Stopwatch();
-		int KeyEvents(int code, IntPtr wParam, IntPtr lParam)
-		{
-			if (code < 0)
-				return CallNextHookEx(_mouseHook, code, wParam, lParam);
+
+        int KeyEvents(int code, IntPtr wParam, IntPtr lParam)
+        {
+            if (code < 0)
+                return CallNextHookEx(_mouseHook, code, wParam, lParam);
 
             if (code == this.HC_ACTION)
             {
                 KBDLLHOOKSTRUCT objKeyInfo = (KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(KBDLLHOOKSTRUCT));
 
-                //if (wParam == (IntPtr)0x0100) // Key down
-                //{
-                //    pressedKeys.Add(objKeyInfo.key); // Add the key to the set of pressed keys
-                //    stopwatch.Restart(); // Restart the stopwatch
-                //}
-                //else if (wParam == (IntPtr)0x0101) // Key up
-                //{
-                //    stopwatch.Stop(); // Stop the stopwatch
+                if (wParam == (IntPtr)0x0100) // Key down
+                {
+                    pressedKeys.Add(objKeyInfo.key); // Add the key to the set of pressed keys
+                    stopwatch.Restart(); // Restart the stopwatch
+                }
+                else if (wParam == (IntPtr)0x0101) // Key up
+                {
+                    stopwatch.Stop(); // Stop the stopwatch
 
-                //    if (pressedKeys.Count == 1 && (objKeyInfo.key == Keys.LWin || objKeyInfo.key == Keys.RWin))
-                //    {
-                //        // Introduce a small delay (e.g., 100 milliseconds) to ensure the key is held for a minimum time
-                //        if (stopwatch.ElapsedMilliseconds <= 100)
-                //        {
-                //            bool anyKeyPressed = false;
-				
-                //            foreach (Key key in Enum.GetValues(typeof(Key)))
-                //            {
-                //                if (key != Key.None && key != Key.LWin && key != Key.RWin && Keyboard.IsKeyDown(key))
-                //                {
-                //                    anyKeyPressed = true;
-                //                    break;
-                //                }
-                //            }
-                //            // Only execute the actions if no other keys are pressed
-                //            if (!anyKeyPressed)
-                //            {
-                //                StartTriggered?.Invoke(this, EventArgs.Empty);
-                //                return 1;
-                //            }
-                //        }
-                //    }
+                    if (pressedKeys.Count == 1 && (objKeyInfo.key == Keys.LWin || objKeyInfo.key == Keys.RWin))
+                    {
+                        // Introduce a small delay (e.g., 100 milliseconds) to ensure the key is held for a minimum time
 
-                //    pressedKeys.Clear();
-                //}
+                        if (stopwatch.ElapsedMilliseconds <= 100)
+                        {
+                            bool anyKeyPressed = false;
+
+                            foreach (Key key in Enum.GetValues(typeof(Key)))
+                            {
+                                if (key != Key.None && key != Key.LWin && key != Key.RWin && Keyboard.IsKeyDown(key))
+                                {
+                                    anyKeyPressed = true;
+                                    break;
+                                }
+                            }
+                            // Only execute the actions if no other keys are pressed
+                            if (!anyKeyPressed)
+                            {
+                                StartTriggered(this, null);
+                            }
+                        }
+                    }
+
+                    pressedKeys.Clear();
+                }
             }
 
-
-
             return CallNextHookEx(_mouseHook, code, wParam, lParam);
-		}
+        }
 
 		public void Close()
 		{
