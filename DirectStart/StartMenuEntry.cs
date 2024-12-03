@@ -10,19 +10,19 @@ namespace B8TAM
 		File,
 		Directory
 	}
-	internal abstract class StartMenuEntry
+    public abstract class StartMenuEntry
 	{
 		public string Alph { get { return Title[0].ToString(); } }
 		public string Title { get; set; }
 		public ImageSource Icon { get; set; }
 	}
-	internal class StartMenuDirectory : StartMenuLink
+    public class StartMenuDirectory : StartMenuLink
 	{
 		public bool HasChildren { get; set; }
 		public ObservableCollection<StartMenuLink> Links { get; set; }
 		public ObservableCollection<StartMenuDirectory> Directories { get; set; }
 	}
-	internal class StartMenuLink : StartMenuEntry
+	public class StartMenuLink : StartMenuEntry
 	{
 		public string Link { get; set; }
 		public bool AllowOpenLocation { get; set; }

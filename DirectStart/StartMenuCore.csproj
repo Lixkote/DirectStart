@@ -117,6 +117,7 @@
     <Compile Include="IconHelperTile.cs" />
     <Compile Include="ImmersiveColors.cs" />
     <Compile Include="ImmersiveContextMenu.cs" />
+    <Compile Include="MetroStuff.cs" />
     <Compile Include="NewIconHelper.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>

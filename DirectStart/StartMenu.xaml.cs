@@ -51,6 +51,15 @@ namespace B8TAM
         string profilePictureShape;
 		double taskbarheightinpx;
 
+        public SolidColorBrush PressedBackground
+        {
+            get
+            {
+                IntPtr pElementName = Marshal.StringToHGlobalUni(ImmersiveColors.ImmersiveStartSelectionBackground.ToString());
+                System.Windows.Media.Color color = GetColor(pElementName);
+                return new SolidColorBrush(color);
+            }
+        }
 
 
         public ICommand Run => new RunCommand(RunCommand);
@@ -115,9 +124,15 @@ namespace B8TAM
 			PreparePinnedStartMenu();
 			string programs = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonStartMenu), "Programs");
 			GetPrograms(programs);
-			programs = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.StartMenu), "Programs");
+            programs = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.StartMenu), "Programs");
 			GetPrograms(programs);
             StartPipeServer();
+
+            string metroAppsDirectory = @"C:\Program Files\WindowsApps"; // Modify this as needed
+            LoadMetroApps(metroAppsDirectory);
+
+            string immersiveSet = @"C:\Windows\ImmersiveControlPanel"; // Modify this as needed
+            LoadMetroApps(immersiveSet);
 
 
             this.sourceTypes = new List<SourceType>()
@@ -153,18 +168,8 @@ namespace B8TAM
 			// PowerGlyph.Source = Properties.Resources.powerglyph.ToBitmapImage();
 			UserNameText.Text = Environment.UserName;
 
-            if (IsSkinSupportDuiBackgroundColor.Text == "True" || IsSkinSupportDuiBackgroundColor.Text == "true")
-            {
-                // DUI Colors for the main start menu grid:
-                IntPtr pElementName = Marshal.StringToHGlobalUni(ImmersiveColors.ImmersiveStartBackground.ToString());
-                System.Windows.Media.Color color = GetColor(pElementName);
-                StartMenuBackground.Background = new SolidColorBrush(color);
-                StartLogoTop.Background = new SolidColorBrush(color);
-                StartLogoLeft.Background = new SolidColorBrush(color);
-                StartLogoBottom.Background = new SolidColorBrush(color);
-                StartLogoRight.Background = new SolidColorBrush(color);
-            }
-			LoadTiles();
+			DUIColorize();
+            LoadTiles();
 			AdjustToTaskbar();
             profilePictureShape = (string)System.Windows.Application.Current.Resources["ProfilePictureShape"];
             forceFillStartButton = (string)System.Windows.Application.Current.Resources["ForceFillStartButton"];
@@ -175,6 +180,21 @@ namespace B8TAM
 			else
 			{
                 UserRounderer.CornerRadius = new CornerRadius(0);
+            }
+        }
+
+		private void DUIColorize()
+		{
+            if (IsSkinSupportDuiBackgroundColor.Text == "True" || IsSkinSupportDuiBackgroundColor.Text == "true")
+            {
+                // DUI Colors for the main start menu grid:
+                IntPtr pElementName = Marshal.StringToHGlobalUni(ImmersiveColors.ImmersiveStartBackground.ToString());
+                System.Windows.Media.Color color = GetColor(pElementName);
+                StartMenuBackground.Background = new SolidColorBrush(color);
+                StartLogoTop.Background = new SolidColorBrush(color);
+                StartLogoLeft.Background = new SolidColorBrush(color);
+                StartLogoBottom.Background = new SolidColorBrush(color);
+                StartLogoRight.Background = new SolidColorBrush(color);
             }
         }
 
@@ -324,16 +344,8 @@ namespace B8TAM
 			// Get the screen
 			Screen screen = Screen.FromHandle(new System.Windows.Interop.WindowInteropHelper(this).Handle);
             // Get the taskbar height
-            isretrobarfix = (string)System.Windows.Application.Current.Resources["RetroBarFix"];
-            if (isretrobarfix == "true")
-            {
-                taskbarheightinpx = 30;
-            }
-            else
-            {
-                taskbarheightinpx = GetTaskbarHeight();
-            }
-			double taskbarwidthinpx = GetTaskbarWidth();
+            taskbarheightinpx = GetTaskbarHeight();
+            double taskbarwidthinpx = GetTaskbarWidth();
 			var taskbarPosition = GetTaskbarPosition.Taskbar.Position;
             Version osVersion = Environment.OSVersion.Version;
 
@@ -649,6 +661,8 @@ namespace B8TAM
                 else
                 {
                     Show();
+                    // AdjustToTaskbar();
+                    DUIColorize();
                     WindowActivator.ActivateWindow(new System.Windows.Interop.WindowInteropHelper(Menu).Handle);
                     SearchText.Focus();
                 }
@@ -700,9 +714,27 @@ namespace B8TAM
 			Visibility = Visibility.Hidden;
 			Hide();
 		}
-		
 
-		private void GetPrograms(string directory)
+        // Method to load Metro apps into the Programs list
+        private void LoadMetroApps(string metroAppsDirectory)
+        {
+            // Assuming GetMetroApps is a static method and takes the directory where metro apps are stored
+            var metroApps = MetroAppHelper.GetMetroApps(metroAppsDirectory);
+
+            // Add each metro app to the ObservableCollection
+            foreach (var metroApp in metroApps)
+            {
+                Programs.Add(new MetroApp
+                {
+                    Name = metroApp.Name,
+					Path = metroApp.Path,
+                    Icon = metroApp.Icon,  // You can display an icon, or handle it as needed
+                    Identity = metroApp.Identity
+                });
+            }
+        }
+
+        private void GetPrograms(string directory)
 		{
 			foreach (string f in Directory.GetFiles(directory))
 			{
@@ -970,7 +1002,27 @@ namespace B8TAM
 
 		private void ExitDS_Click(object sender, RoutedEventArgs e)
         {
-            Environment.Exit(0);
+            try
+            {
+                // Get all processes named "Start menu.exe"
+                var processes = Process.GetProcessesByName("Start menu");
+
+                if (processes.Length == 0)
+                {
+                    return;
+                }
+
+                // Kill each found process
+                foreach (var process in processes)
+                {
+                    process.Kill();
+                    process.WaitForExit();
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
 
         private void Menu_Loaded(object sender, RoutedEventArgs e)
@@ -1052,6 +1104,21 @@ namespace B8TAM
             {
                 Debug.WriteLine("An error occurred: " + ex.Message);
             }
+        }
+
+        private void UserImageChangeMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void LockMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void SignOutMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 

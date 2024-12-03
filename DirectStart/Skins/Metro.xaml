@@ -209,7 +209,7 @@
                                                     <Setter TargetName="Border" Property="Border.Background" Value="#FFDEDEDE" />
                                                 </Trigger>
                                                 <Trigger Property="MenuItem.IsPressed" Value="True">
-                                                    <Setter TargetName="Border" Property="Border.Background" Value="#FF4617B5" />
+                                                    <Setter TargetName="Border" Property="Border.Background" Value="{Binding PressedBackground}" />
                                                 </Trigger>
                                                 <Trigger Property="IsEnabled" Value="False">
                                                     <Setter Property="Foreground" Value="#FF808080" />
@@ -233,7 +233,7 @@
                                                     <Setter TargetName="Border" Property="Border.Background" Value="#FFDEDEDE" />
                                                 </Trigger>
                                                 <Trigger Property="MenuItem.IsPressed" Value="True">
-                                                    <Setter TargetName="Border" Property="Border.Background" Value="#FF4617B5" />
+                                                    <Setter TargetName="Border" Property="Border.Background" Value="{Binding PressedBackground}" />
                                                 </Trigger>
                                                 <Trigger Property="IsEnabled" Value="False">
                                                     <Setter Property="Foreground" Value="#FF808080" />
@@ -262,7 +262,7 @@
                                         <Setter Property="BorderBrush" Value="#00FFFFFF" />
                                     </Trigger>
                                     <Trigger Property="MenuItem.IsPressed" Value="True">
-                                        <Setter Property="Background" Value="#FF4617B5" />
+                                        <Setter Property="Background" Value="{Binding PressedBackground}" />
                                         <Setter Property="Foreground" Value="#FFFFFFFF" />
                                         <Setter Property="BorderThickness" Value="0" />
                                     </Trigger>
