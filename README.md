@@ -3,17 +3,13 @@
     <img src="https://raw.githubusercontent.com/Lixkote/DirectStart/master/logo.png">
 </p>
 
-**Recreation of the DirectUI based start menu.**
+# DirectStart
+
+**This project aims to recreate the unreleased Start Menu update for Windows 8.1**
 
 Supported operating systems:
 
-- Windows 8.1
-- Windows 10 (10240-latest)
-- Windows 11 (With ExplorerPatcher, RetroBar, or StartAllBack)
-
-Might be supported in the future:
-- Windows 7 SP1
-- Windows Vista (with Extended Kernel)
+- Windows 8.1 build 9600
 
 ## Screenshots:
 
