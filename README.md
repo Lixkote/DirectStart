@@ -1,6 +1,6 @@
 
 <p align="left">
-    <img src="https://raw.githubusercontent.com/Lixkote/DirectStart/master/logo.png">
+    <img src="https://raw.githubusercontent.com/Lixkote/DirectStart/master/laptop.png">
 </p>
 
 # DirectStart
@@ -13,8 +13,7 @@ Supported operating systems:
 
 ## Screenshots:
 
-![DirectStart on 8.1 Screenshot](https://github.com/Lixkote/B8taMenu/blob/main/screenshot81new.png)
-![DirectStart on 10 hillel Screenshot](https://github.com/Lixkote/B8taMenu/blob/main/screenshot10new.png)
+![DirectStart on 8.1 Screenshot](https://github.com/Lixkote/B8taMenu/blob/main/preview.png)
 
 
 ## Credits and notes
