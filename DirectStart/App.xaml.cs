@@ -77,6 +77,7 @@ namespace AFSM
                         string profilePictureShape = null;
                         string forceFillStartButton = null;
                         string retrobarfix = null;
+                        string notilesbool = null;
 
                         // Parse each line of the config file
                         foreach (string line in lines)
@@ -101,6 +102,9 @@ namespace AFSM
                                         break;
                                     case "RetroBarFix":
                                         retrobarfix = value;
+                                        break;
+                                    case "NoTiles":
+                                        notilesbool = value;
                                         break;
                                     default:
                                         // Handle unknown keys if necessary
@@ -130,6 +134,8 @@ namespace AFSM
                         this.Resources["ProfilePictureShape"] = profilePictureShape;
                         this.Resources["ForceFillStartButton"] = forceFillStartButton;
                         this.Resources["RetroBarFix"] = retrobarfix;
+                        this.Resources["NoTilesBool"] = notilesbool;
+                        SetLanguageDictionary();
                     }
                 }
                 catch (Exception ex)
@@ -144,6 +150,23 @@ namespace AFSM
             }            
         }
 
+        private void SetLanguageDictionary()
+        {
+            ResourceDictionary dict = new ResourceDictionary();
+            switch (Thread.CurrentThread.CurrentCulture.ToString())
+            {
+                case "en-US":
+                    dict.Source = new Uri("..\\MultiLang\\StringResources.xaml", UriKind.Relative);
+                    break;
+                case "pl-PL":
+                    dict.Source = new Uri("..\\MultiLang\\StringResources.pl-PL.xaml", UriKind.Relative);
+                    break;
+                default:
+                    dict.Source = new Uri("..\\MultiLang\\StringResources.xaml", UriKind.Relative);
+                    break;
+            }
+            this.Resources.MergedDictionaries.Add(dict);
+        }
         private string GetResourceDictionaryPath(string themeName)
         {
             // Define your mapping of theme names to ResourceDictionary paths

@@ -50,6 +50,7 @@ namespace B8TAM
         string isretrobarfix;
         string profilePictureShape;
 		double taskbarheightinpx;
+        string noTiles;
 
         public SolidColorBrush PressedBackground
         {
@@ -173,13 +174,22 @@ namespace B8TAM
 			AdjustToTaskbar();
             profilePictureShape = (string)System.Windows.Application.Current.Resources["ProfilePictureShape"];
             forceFillStartButton = (string)System.Windows.Application.Current.Resources["ForceFillStartButton"];
-			if (profilePictureShape == "rounded")
+            noTiles = (string)System.Windows.Application.Current.Resources["NoTilesBool"];
+            if (profilePictureShape == "rounded")
 			{
 				UserRounderer.CornerRadius = new CornerRadius(999);
             }
 			else
 			{
                 UserRounderer.CornerRadius = new CornerRadius(0);
+            }
+            Menu.Width = 273;
+            StartMenuBackground.Width = 273;
+            if (noTiles == "true")
+            {
+				Debug.WriteLine("działa");
+                Menu.Width = 267;
+                StartMenuBackground.Width = 267;
             }
         }
 
@@ -348,7 +358,6 @@ namespace B8TAM
             double taskbarwidthinpx = GetTaskbarWidth();
 			var taskbarPosition = GetTaskbarPosition.Taskbar.Position;
             Version osVersion = Environment.OSVersion.Version;
-
 
             switch (taskbarPosition)
 			{

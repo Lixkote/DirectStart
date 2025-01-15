@@ -136,6 +136,12 @@
     <Compile Include="StartMenuListener.cs" />
     <Compile Include="StartMenuEntry.cs" />
     <Compile Include="WindowActivator.cs" />
+    <Page Include="MultiLang\StringResources.pl-PL.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MultiLang\StringResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Skins\8CP.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

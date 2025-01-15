@@ -1,0 +1,15 @@
+<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+     xmlns:system="clr-namespace:System;assembly=mscorlib">
+
+    <system:String x:Key="close">Exit DirectStart</system:String>
+    <system:String x:Key="signout">Sign out</system:String>
+    <system:String x:Key="shutdown">Shut down</system:String>
+    <system:String x:Key="search">Search everywhere</system:String>
+    <system:String x:Key="lock">Lock</system:String>
+    <system:String x:Key="allapps">All Apps</system:String>
+    <system:String x:Key="restart">Restart</system:String>
+    <system:String x:Key="sleep">Sleep</system:String>
+    <system:String x:Key="chgpic">Change account picture</system:String>
+</ResourceDictionary>

@@ -200,19 +200,19 @@
                                 <TextBlock x:Name="PowerFontGlyph" Style="{DynamicResource PowerGlyphStyleText}" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
                                 <FrameworkElement.ContextMenu>
                                     <local:ImmesiveContextMenu x:Name="PowerMenu" Style="{DynamicResource PowerMenuStyle}">
-                                        <MenuItem x:Name="sleepPC" Header="Sleep" Click="sleepPC_Click"/>
-                                        <MenuItem x:Name="shutdownPC" Header="Shut down" Click="shutdownPC_Click"/>
-                                        <MenuItem x:Name="restartPC" Header="Restart" Click="restartPC_Click"/>
-                                        <MenuItem x:Name="ExitDS" Header="Exit DirectStart" Click="ExitDS_Click"/>
+                                        <MenuItem x:Name="sleepPC" Header="{DynamicResource sleep}" Click="sleepPC_Click"/>
+                                        <MenuItem x:Name="shutdownPC" Header="{DynamicResource shutdown}" Click="shutdownPC_Click"/>
+                                        <MenuItem x:Name="restartPC" Header="{DynamicResource restart}" Click="restartPC_Click"/>
+                                        <MenuItem x:Name="ExitDS" Header="{DynamicResource close}" Click="ExitDS_Click"/>
                                     </local:ImmesiveContextMenu>
                                 </FrameworkElement.ContextMenu>
                             </ToggleButton>
                             <ToggleButton Grid.Row="0" Click="UserImageButton_Click" x:Name="UserImageButton" HorizontalAlignment="Left" Style="{DynamicResource MetroAnimatedToggleButton}">
                                 <FrameworkElement.ContextMenu>
                                     <local:ImmesiveContextMenu x:Name="UserMenu" Style="{DynamicResource UserMenuStyle}">
-                                        <MenuItem Header="Change account picture" x:Name="UserImageChangeMenuItem" Click="UserImageChangeMenuItem_Click" />
-                                        <MenuItem Header="Lock" x:Name="LockMenuItem" Click="LockMenuItem_Click"/>
-                                        <MenuItem Header="Sign out" x:Name="SignOutMenuItem" Click="SignOutMenuItem_Click"/>
+                                        <MenuItem Header="{DynamicResource chgpic}" x:Name="UserImageChangeMenuItem" Click="UserImageChangeMenuItem_Click" />
+                                        <MenuItem Header="{DynamicResource lock}" x:Name="LockMenuItem" Click="LockMenuItem_Click"/>
+                                        <MenuItem Header="{DynamicResource signout}" x:Name="SignOutMenuItem" Click="SignOutMenuItem_Click"/>
                                     </local:ImmesiveContextMenu>
                                 </FrameworkElement.ContextMenu>
                                 <Grid x:Name="grid" Margin="2,0,0,0">
@@ -351,14 +351,14 @@
 
                     <ToggleButton x:Name="AppsToggle" Height="34" VerticalAlignment="Bottom" Margin="0,0,0,40" Checked="HandleCheck" Unchecked="HandleUnchecked" HorizontalContentAlignment="Left">
                         <Grid>
-                            <TextBlock x:Name="ToggleButtonText" Style="{StaticResource GDIText}" Text="All Apps"  Height="16" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="40,0,0,0" Foreground="White"/>
+                            <TextBlock x:Name="ToggleButtonText" Style="{StaticResource GDIText}" Text="{DynamicResource allapps}"  Height="16" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="40,0,0,0" Foreground="White"/>
                             <TextBlock x:Name="ToggleButtonGlyph" Style="{StaticResource AppsGlyphStyleText}"  VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,0,0,0" Foreground="White"/>
                         </Grid>
                     </ToggleButton>
                     <Border x:Name="SearchBorder" Style="{StaticResource SearchGridBG}" BorderThickness="1" VerticalAlignment="Bottom" Height="34">
                         <Grid>
                             <Image x:Name="SearchGlyph" Style="{StaticResource SearchGlyphStyle}" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" Height="34" Width="12" />
-                            <TextBlock  Style="{StaticResource GDIText}" HorizontalAlignment="Stretch" Text="Search everywhere" VerticalAlignment="Center" Margin="21,0,0,0"
+                            <TextBlock  Style="{StaticResource GDIText}" HorizontalAlignment="Stretch" Text="{DynamicResource search}" VerticalAlignment="Center" Margin="21,0,0,0"
 Visibility="{Binding Text.IsEmpty, Converter={StaticResource BoolToVis}, ElementName=SearchText}">
                                 <TextBlock.Foreground>
                                     <SolidColorBrush Color="#CC000000" Opacity="0.7"/>
