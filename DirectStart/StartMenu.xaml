@@ -352,6 +352,7 @@
                     <ToggleButton x:Name="AppsToggle" Height="34" VerticalAlignment="Bottom" Margin="0,0,0,40" Checked="HandleCheck" Unchecked="HandleUnchecked" HorizontalContentAlignment="Left">
                         <Grid>
                             <TextBlock x:Name="ToggleButtonText" Style="{StaticResource GDIText}" Text="{DynamicResource allapps}"  Height="16" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="40,0,0,0" Foreground="White"/>
+                            <TextBlock x:Name="ToggleButtonTextBack" Visibility="Collapsed" Style="{StaticResource GDIText}" Text="{DynamicResource allappsback}"  Height="16" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="40,0,0,0" Foreground="White"/>
                             <TextBlock x:Name="ToggleButtonGlyph" Style="{StaticResource AppsGlyphStyleText}"  VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,0,0,0" Foreground="White"/>
                         </Grid>
                     </ToggleButton>
@@ -385,8 +386,8 @@ Visibility="{Binding Text.IsEmpty, Converter={StaticResource BoolToVis}, Element
         <Button Visibility="Collapsed" Click="StartLogo_Click" x:Name="StartLogoRight" Margin="-1,-1,0,0" Width="53" HorizontalAlignment="Right" Background="#180053" BorderBrush="{x:Null}" VerticalAlignment="Top" Height="40">
             <Image IsHitTestVisible="False" Source="/Resources/startopenlogo.png" Width="28" Height="41" UseLayoutRounding="True" RenderOptions.BitmapScalingMode="HighQuality"  SnapsToDevicePixels="True"/>
         </Button>
-        <Button  Visibility="Collapsed" Click="StartLogo_Click" x:Name="StartLogoBottom" Margin="-1,518,0,-1" Width="49" HorizontalAlignment="Left" Background="#180053" BorderBrush="{x:Null}" Height="41" VerticalAlignment="Bottom">
-            <Image IsHitTestVisible="False" Source="/Resources/startopenlogo.png" Width="28" Height="41" UseLayoutRounding="True" RenderOptions.BitmapScalingMode="HighQuality"  SnapsToDevicePixels="True" Margin="-1,0,0,0"/>
+        <Button  Visibility="Collapsed" Click="StartLogo_Click" x:Name="StartLogoBottom" Margin="-1,518,0,-1" Width="50" HorizontalAlignment="Left" Background="#180053" BorderBrush="{x:Null}" Height="41" VerticalAlignment="Bottom">
+            <Image IsHitTestVisible="False" Source="/Resources/startopenlogo.png" Width="28" Height="41" UseLayoutRounding="True" RenderOptions.BitmapScalingMode="HighQuality"  SnapsToDevicePixels="True" Margin="0,0,0,0"/>
         </Button>
     </Grid>
 </Window>

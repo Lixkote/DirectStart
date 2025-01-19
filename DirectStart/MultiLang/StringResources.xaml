@@ -12,4 +12,5 @@
     <system:String x:Key="restart">Restart</system:String>
     <system:String x:Key="sleep">Sleep</system:String>
     <system:String x:Key="chgpic">Change account picture</system:String>
+    <system:String x:Key="allappsback">Back</system:String>
 </ResourceDictionary>

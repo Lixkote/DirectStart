@@ -702,8 +702,9 @@ namespace B8TAM
 		{
 			GridPrograms.Visibility = Visibility.Visible;
 			GridTogglable.Visibility = Visibility.Collapsed;
-			ToggleButtonText.Text = "Back";
-			ToggleButtonGlyph.Text = "";
+            ToggleButtonText.Visibility = Visibility.Collapsed;
+            ToggleButtonTextBack.Visibility = Visibility.Visible;
+            ToggleButtonGlyph.Text = "";
 			ToggleButtonGlyph.FontFamily = new System.Windows.Media.FontFamily("Segoe UI Symbol");
         }
 
@@ -711,8 +712,9 @@ namespace B8TAM
 		{
 			GridPrograms.Visibility = Visibility.Collapsed;
 			GridTogglable.Visibility = Visibility.Visible;
-			ToggleButtonText.Text = "All Apps";
-			ToggleButtonGlyph.Text = "";
+            ToggleButtonText.Visibility = Visibility.Visible;
+            ToggleButtonTextBack.Visibility = Visibility.Collapsed;
+            ToggleButtonGlyph.Text = "";
             ToggleButtonGlyph.FontFamily = new System.Windows.Media.FontFamily("Segoe UI Symbol");
         }
 

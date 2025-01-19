@@ -12,4 +12,5 @@
 	<system:String x:Key="restart">Uruchom ponownie</system:String>
     <system:String x:Key="sleep">Uśpij</system:String>
     <system:String x:Key="chgpic">Zmień awatar</system:String>
+	<system:String x:Key="allappsback">Wstecz</system:String>
 </ResourceDictionary>
