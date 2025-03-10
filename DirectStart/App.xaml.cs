@@ -6,6 +6,8 @@ using B8TAM;
 using System.Diagnostics;
 using System.Linq;
 using System.IO.Pipes;
+using System.Runtime.CompilerServices;
+using ControlzEx.Theming;
 
 namespace AFSM
 {
@@ -137,11 +139,34 @@ namespace AFSM
                         this.Resources["NoTilesBool"] = notilesbool;
                         SetLanguageDictionary();
                     }
+                    else
+                    {
+                        // DirectStart had an issue loading the config file or its values, we will use the common defaults instead.
+                        this.Resources["ProfilePictureShape"] = "rounded";
+                        string resourceDictionaryPath = GetResourceDictionaryPath("metro");
+                        if (!string.IsNullOrEmpty(resourceDictionaryPath))
+                        {
+                            // Set the ResourceDictionary for the theme
+                            ResourceDictionary skinDictionary = new ResourceDictionary();
+                            skinDictionary.Source = new Uri(resourceDictionaryPath, UriKind.RelativeOrAbsolute);
+                            Resources.MergedDictionaries.Add(skinDictionary);
+                        }
+                        SetLanguageDictionary();
+                    }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.ToString(), "B8taMenu had an issue loading the config file or its values.");
-                    Debug.WriteLine(ex.ToString(), "B8taMenu had an issue loading the config file or its values.");
+                    // DirectStart had an issue loading the config file or its values, we will use the common defaults instead.
+                    this.Resources["ProfilePictureShape"] = "rounded";
+                    string resourceDictionaryPath = GetResourceDictionaryPath("metro");
+                    if (!string.IsNullOrEmpty(resourceDictionaryPath))
+                    {
+                        // Set the ResourceDictionary for the theme
+                        ResourceDictionary skinDictionary = new ResourceDictionary();
+                        skinDictionary.Source = new Uri(resourceDictionaryPath, UriKind.RelativeOrAbsolute);
+                        Resources.MergedDictionaries.Add(skinDictionary);
+                    }
+                    SetLanguageDictionary();
                 }
 
                 // Initialize your main window or any other startup logic

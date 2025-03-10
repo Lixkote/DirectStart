@@ -43,72 +43,80 @@ namespace B8TAM {
         public static List<MetroApp> GetMetroApps(string directory)
         {
             List<MetroApp> metroApps = new List<MetroApp>();
-
-            foreach (string dir in Directory.GetDirectories(directory))
+            try
             {
-                if (File.Exists(dir + @"\AppxManifest.xml"))
+                foreach (string dir in Directory.GetDirectories(directory))
                 {
-                    XmlDocument doc = new XmlDocument();
-                    doc.Load(dir + @"\AppxManifest.xml");
-
-                    // Skip Framework apps
-                    if (doc.GetElementsByTagName("Framework")[0]?.InnerText.ToLower() == "true") continue;
-
-                    // Extract the DisplayName and Identity
-                    string name = doc.GetElementsByTagName("DisplayName")[0]?.InnerText ?? "";
-                    string identity = doc.GetElementsByTagName("Identity")[0]?.Attributes["Name"]?.Value ?? "";
-
-                    // Check if the name is already resolved (doesn't need to resolve ms-resource)
-                    if (!name.Contains("ms-resource"))
+                    if (File.Exists(dir + @"\AppxManifest.xml"))
                     {
-                        metroApps.Add(new MetroApp
+                        XmlDocument doc = new XmlDocument();
+                        doc.Load(dir + @"\AppxManifest.xml");
+
+                        // Skip Framework apps
+                        if (doc.GetElementsByTagName("Framework")[0]?.InnerText.ToLower() == "true") continue;
+
+                        // Extract the DisplayName and Identity
+                        string name = doc.GetElementsByTagName("DisplayName")[0]?.InnerText ?? "";
+                        string identity = doc.GetElementsByTagName("Identity")[0]?.Attributes["Name"]?.Value ?? "";
+
+                        // Check if the name is already resolved (doesn't need to resolve ms-resource)
+                        if (!name.Contains("ms-resource"))
                         {
-                            Name = name,
-                            Path = dir,
-                            Identity = identity,
-                            Icon = GetIconFromManifest(doc, dir)
-                        });
-                    }
-                    else
-                    {
-                        // Handle ms-resource names and resolve them
-                        if (doc.GetElementsByTagName("Application").Count > 1)
-                        {
-                            foreach (XmlElement elem in doc.GetElementsByTagName("Application"))
+                            metroApps.Add(new MetroApp
                             {
-                                name = elem.GetElementsByTagName("m2:VisualElements")[0].Attributes["DisplayName"].Value;
-                                if (name.Contains("AppName")) name = name.Replace("AppName", "AppTitle");
+                                Name = name,
+                                Path = dir,
+                                Identity = identity,
+                                Icon = GetIconFromManifest(doc, dir)
+                            });
+                        }
+                        else
+                        {
+                            // Handle ms-resource names and resolve them
+                            if (doc.GetElementsByTagName("Application").Count > 1)
+                            {
+                                foreach (XmlElement elem in doc.GetElementsByTagName("Application"))
+                                {
+                                    name = elem.GetElementsByTagName("m2:VisualElements")[0].Attributes["DisplayName"].Value;
+                                    if (name.Contains("AppName")) name = name.Replace("AppName", "AppTitle");
+                                    string resolvedName = GetName(dir, name, identity);
+                                    if (!string.IsNullOrEmpty(resolvedName))
+                                    {
+                                        metroApps.Add(new MetroApp
+                                        {
+                                            Name = resolvedName,
+                                            Path = dir,
+                                            Identity = identity,
+                                            Icon = GetIconFromManifest(doc, dir)
+                                        });
+                                    }
+                                }
+                            }
+                            else
+                            {
                                 string resolvedName = GetName(dir, name, identity);
                                 if (!string.IsNullOrEmpty(resolvedName))
                                 {
                                     metroApps.Add(new MetroApp
                                     {
                                         Name = resolvedName,
-                                        Path = dir,
                                         Identity = identity,
                                         Icon = GetIconFromManifest(doc, dir)
                                     });
                                 }
                             }
                         }
-                        else
-                        {
-                            string resolvedName = GetName(dir, name, identity);
-                            if (!string.IsNullOrEmpty(resolvedName))
-                            {
-                                metroApps.Add(new MetroApp
-                                {
-                                    Name = resolvedName,
-                                    Identity = identity,
-                                    Icon = GetIconFromManifest(doc, dir)
-                                });
-                            }
-                        }
                     }
                 }
-            }
 
-            return metroApps.Distinct().ToList();
+                return metroApps.Distinct().ToList();
+            }
+            catch
+            {
+                System.Windows.MessageBox.Show("Ensure you have permissions to access WindowsApps folder", "We couldn't load metro apps support");
+                List<MetroApp> emptylist = new List<MetroApp>();
+                return emptylist;
+            }
         }
 
         // Method to extract the icon from the AppxManifest.xml
