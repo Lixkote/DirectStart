@@ -183,8 +183,8 @@ namespace B8TAM
 			{
                 UserRounderer.CornerRadius = new CornerRadius(0);
             }
-            Menu.Width = 273;
-            StartMenuBackground.Width = 273;
+            // Menu.Width = 273;
+            // StartMenuBackground.Width = 273;
             if (noTiles == "true")
             {
 				Debug.WriteLine("działa");
