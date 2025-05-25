@@ -10,6 +10,8 @@
 Supported operating systems:
 
 - Windows 8.1 build 9600
+- Windows 10 all builds
+- Windows 11 all builds
 
 ## Screenshots:
 
