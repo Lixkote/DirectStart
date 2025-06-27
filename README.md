@@ -10,8 +10,9 @@
 Supported operating systems:
 
 - Windows 8.1 build 9600
-- Windows 10 all builds
-- Windows 11 all builds
+
+Note: This app can launch in some newer and older versions of Windows, but **only Windows 8.1 6.3.9600 is fully supported!**
+**Do not report issues if you are running this app on an other version of Windows!**
 
 ## Screenshots:
 
@@ -30,4 +31,4 @@ Notes:
 Credits:
 - Nazgul07 for AFSM (used as base for this project):
 https://github.com/Nazgul07/AFSM
-- Splitwirez for Start9 and wonderful xaml styles
+- Splitwirez for Start9 and its wonderful xaml styles
