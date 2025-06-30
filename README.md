@@ -16,7 +16,7 @@ Note: This app can launch in some newer and older versions of Windows, but **onl
 
 ## Screenshots:
 
-![DirectStart on 8.1 Screenshot](https://github.com/Lixkote/B8taMenu/blob/main/preview.png)
+![DirectStart on 8.1 Screenshot](https://github.com/Lixkote/B8taMenu/blob/main/preview2.png)
 
 
 ## Credits and notes
