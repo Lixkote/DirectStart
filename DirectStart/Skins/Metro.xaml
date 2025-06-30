@@ -592,25 +592,35 @@
             <Setter.Value>
                 <ControlTemplate TargetType="local:TileControl">
                     <Grid x:Name="RootGrid">
-                        <Border x:Name="PART_Border"
+                        <Border x:Name="Background"
                             Background="{TemplateBinding Background}"
+                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
+                        </Border>
+                        <Border x:Name="Stroke"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
+                            Opacity="0.4"
                             SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
-                            <Grid>
-                                <StackPanel HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                        </Border>
+                        <Border x:Name="PART_HoverBorder"
+                            BorderBrush="Black"
+                            BorderThickness="2"
+                            Opacity="0"
+                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                        <Grid>
+                            <StackPanel HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                         VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                         Orientation="Horizontal">
-                                    <ContentPresenter RecognizesAccessKey="True" />
-                                    <TextBlock x:Name="size" Text="48" Visibility="Collapsed"></TextBlock>
-                                    <TextBlock x:Name="path" Text="{Binding EXEPath}" Visibility="Collapsed"></TextBlock>
-                                    <Image x:Name="Icon" Source="{Binding Icon, RelativeSource={RelativeSource TemplatedParent}}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,28" Width="48" Height="48" Stretch="Fill">
-                                    </Image>
-                                    <TextBlock VerticalAlignment="Center"
+                                <ContentPresenter RecognizesAccessKey="True" />
+                                <TextBlock x:Name="size" Text="48" Visibility="Collapsed"></TextBlock>
+                                <TextBlock x:Name="path" Text="{Binding EXEPath}" Visibility="Collapsed"></TextBlock>
+                                <Image x:Name="Icon" Source="{Binding Icon, RelativeSource={RelativeSource TemplatedParent}}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,28" Width="48" Height="48" Stretch="Fill">
+                                </Image>
+                                <TextBlock VerticalAlignment="Center"
                                            FontSize="{TemplateBinding CountFontSize}"
                                            Text="{TemplateBinding Count}" />
-                                </StackPanel>
-                                <TextBlock x:Name="TitleBlock" Margin="14,0,0,4"
+                            </StackPanel>
+                            <TextBlock x:Name="TitleBlock" Margin="14,0,0,4"
                                             FontSize="12"
                                             
                                             FontFamily="Segoe UI"
@@ -619,19 +629,13 @@
                                             Foreground="{TemplateBinding Foreground}"
                                             Text="{TemplateBinding Title}"
                                             TextWrapping="Wrap" />
-                            </Grid>
-                        </Border>
-                        <Border x:Name="PART_HoverBorder"
-                            BorderBrush="Black"
-                            BorderThickness="2"
-                            Opacity="0"
-                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                        </Grid>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="Button.IsPressed" Value="True">
                             <Setter Property="RenderTransform">
                                 <Setter.Value>
-                                    <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="0.98" ScaleY="0.98" />
+                                    <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="0.97" ScaleY="0.97" />
                                 </Setter.Value>
                             </Setter>
                         </Trigger>
