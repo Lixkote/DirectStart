@@ -2,7 +2,7 @@ This application is purely experimental and its author is not responsible for an
 
 MIT License
 
-Copyright (c) 2024 Lixkote
+Copyright (c) 2025 lkt27 (also known as lixkote)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

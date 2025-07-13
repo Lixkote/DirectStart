@@ -1,3 +1,0 @@
-Theme=metro
-ProfilePictureShape=rounded
-ForceFillStartButton=false
