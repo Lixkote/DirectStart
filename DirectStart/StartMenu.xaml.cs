@@ -1028,8 +1028,8 @@ namespace B8TAM
         {
             try
             {
-                // Get all processes named "Start menu.exe"
-                var processes = Process.GetProcessesByName("Start menu");
+                // Get all processes named "DirectStart.exe"
+                var processes = Process.GetProcessesByName("DirectStart");
 
                 if (processes.Length == 0)
                 {
