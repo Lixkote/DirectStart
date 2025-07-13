@@ -30,7 +30,7 @@ Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
 WizardImageFile=.\WizardImage.bmp
-MinVersion=6.0
+MinVersion=6.1sp1
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
