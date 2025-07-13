@@ -544,27 +544,84 @@
         <Setter Property="Width" Value="140" />
         <Setter Property="local:ControlHelper.MouseOverBorderBrush" Value="{x:Null}" />
     </Style>
-    <Style TargetType="{x:Type MenuItem}" >
+    <Style TargetType="{x:Type MenuItem}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type MenuItem}">
-                    <Border x:Name="Bd" Padding="40,4,40,4" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True" Uid="Border_38">
-                        <ContentPresenter x:Name="ContentPresenter"  Content="{TemplateBinding Header}" Grid.Column="1" ContentSource="Header" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Uid="ContentPresenter_33"/>
-                    </Border>
+                    <Grid>
+                        <Border x:Name="Bd"
+                            Padding="40,4,40,4"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Background="{TemplateBinding Background}"
+                            SnapsToDevicePixels="True">
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="20" />
+                                </Grid.ColumnDefinitions>
+
+                                <ContentPresenter x:Name="ContentPresenter"
+                                              ContentSource="Header"
+                                              Margin="{TemplateBinding Padding}"
+                                              RecognizesAccessKey="True"
+                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+
+                                <!-- Arrow Glyph -->
+                                <TextBlock x:Name="ArrowGlyph"
+                                       Grid.Column="1"
+                                       VerticalAlignment="Center"
+                                       Foreground="Black"
+                                       FontWeight="Bold"
+                                       Text=">"
+                                       Visibility="Collapsed" />
+                            </Grid>
+                        </Border>
+
+                        <!-- Submenu Popup -->
+                        <Popup x:Name="PART_Popup"
+                           Placement="Right"
+                           IsOpen="{TemplateBinding IsSubmenuOpen}"
+                           AllowsTransparency="True"
+                           Focusable="False"
+                           PopupAnimation="Fade">
+                            <Border Background="White"
+                                BorderBrush="#A0A0A0"
+                                BorderThickness="1"
+                                SnapsToDevicePixels="True">
+                                <StackPanel IsItemsHost="True"
+                                        KeyboardNavigation.DirectionalNavigation="Cycle" />
+                            </Border>
+                        </Popup>
+                    </Grid>
+
+                    <!-- Triggers -->
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsHighlighted" Value="True">
-                            <Setter Property="Background" TargetName="Bd">
-                                <Setter.Value>
-                                    <SolidColorBrush Color="#E6E6E6"></SolidColorBrush>
-                                </Setter.Value>
-                            </Setter>
-                            <Setter Property="BorderBrush" TargetName="Bd" Value="Transparent"/>
+                            <Setter TargetName="Bd" Property="Background" Value="#E6E6E6" />
+                            <Setter TargetName="Bd" Property="BorderBrush" Value="Transparent" />
+                        </Trigger>
+
+                        <Trigger Property="Role" Value="TopLevelHeader">
+                            <Setter TargetName="PART_Popup" Property="Popup.Placement" Value="Bottom" />
+                        </Trigger>
+
+                        <Trigger Property="Role" Value="SubmenuHeader">
+                            <Setter TargetName="PART_Popup" Property="Popup.Placement" Value="Right" />
+                        </Trigger>
+
+                        <!-- Show arrow glyph only if HasItems == True -->
+                        <Trigger Property="HasItems" Value="True">
+                            <Setter TargetName="ArrowGlyph" Property="Visibility" Value="Visible" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
+
+
     <Style x:Key="TilesHostForAero" TargetType="{x:Type ItemsControl}">
         <Setter Property="Margin" Value="0,3,0,0"></Setter>
     </Style>

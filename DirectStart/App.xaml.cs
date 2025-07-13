@@ -1,13 +1,14 @@
-﻿using System;
-using System.Threading;
-using System.IO;
-using System.Windows;
-using B8TAM;
-using System.Diagnostics;
-using System.Linq;
-using System.IO.Pipes;
-using System.Runtime.CompilerServices;
+﻿using B8TAM;
 using ControlzEx.Theming;
+using Microsoft.Win32;
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.IO.Pipes;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Windows;
 
 namespace AFSM
 {
@@ -55,125 +56,105 @@ namespace AFSM
 
             string debug = "false";
 
-            // Check if the trigger argument is passed
             if (e.Args.Contains("/trigger") || debug == "true")
             {
-                // Handle the trigger functionality
-                HandleTriggerArgument();
-                // Shutdown the application if it was started just to trigger
                 Environment.Exit(0);
             }
             else
             {
-                // Read the text file from %HOMEPATH%
-                string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "DirectStart", "Tiles", "config.txt");
                 try
                 {
-                    if (File.Exists(filePath))
+                    // Read values from the registry
+                    RegistryKey key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\DirectStart");
+                    if (key != null)
                     {
-                        // Read the content of the text file
-                        string[] lines = File.ReadAllLines(filePath);
+                        string theme = key.GetValue("theme") as string ?? "metro";
+                        string profilePictureShape = key.GetValue("pfpshape") as string ?? "rounded";
+                        string forceFillStartButton = key.GetValue("forcefillstartbutton") as string ?? "false";
+                        string retrobarfix = key.GetValue("retrobarfix") as string ?? "false";
+                        string noTilesBool = key.GetValue("disablenotiles") as string ?? "false";  // Assuming you meant "disabletiles"
 
-                        // Initialize variables to hold configuration values
-                        string theme = null;
-                        string profilePictureShape = null;
-                        string forceFillStartButton = null;
-                        string retrobarfix = null;
-                        string notilesbool = null;
-
-                        // Parse each line of the config file
-                        foreach (string line in lines)
+                        // Apply theme
+                        string resourceDictionaryPath = GetResourceDictionaryPath(theme);
+                        if (!string.IsNullOrEmpty(resourceDictionaryPath))
                         {
-                            string[] parts = line.Split('=');
-                            if (parts.Length == 2)
+                            ResourceDictionary skinDictionary = new ResourceDictionary
                             {
-                                string key = parts[0].Trim();
-                                string value = parts[1].Trim();
-
-                                // Apply configuration based on the key
-                                switch (key.ToLower())
-                                {
-                                    case "theme":
-                                        theme = value;
-                                        break;
-                                    case "profilepictureshape":
-                                        profilePictureShape = value;
-                                        break;
-                                    case "forcefillstartbutton":
-                                        forceFillStartButton = value;
-                                        break;
-                                    case "RetroBarFix":
-                                        retrobarfix = value;
-                                        break;
-                                    case "NoTiles":
-                                        notilesbool = value;
-                                        break;
-                                    default:
-                                        // Handle unknown keys if necessary
-                                        break;
-                                }
-                            }
+                                Source = new Uri(resourceDictionaryPath, UriKind.RelativeOrAbsolute)
+                            };
+                            Resources.MergedDictionaries.Add(skinDictionary);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Invalid theme specified in the registry.");
                         }
 
-                        // Apply the theme
-                        if (!string.IsNullOrEmpty(theme))
-                        {
-                            string resourceDictionaryPath = GetResourceDictionaryPath(theme);
-                            if (!string.IsNullOrEmpty(resourceDictionaryPath))
-                            {
-                                // Set the ResourceDictionary for the theme
-                                ResourceDictionary skinDictionary = new ResourceDictionary();
-                                skinDictionary.Source = new Uri(resourceDictionaryPath, UriKind.RelativeOrAbsolute);
-                                Resources.MergedDictionaries.Add(skinDictionary);
-                            }
-                            else
-                            {
-                                MessageBox.Show("Invalid theme specified in the config file.");
-                            }
-                        }
-
-                        // Store profilePictureShape and forceFillStartButton in application-level resources
                         this.Resources["ProfilePictureShape"] = profilePictureShape;
                         this.Resources["ForceFillStartButton"] = forceFillStartButton;
                         this.Resources["RetroBarFix"] = retrobarfix;
-                        this.Resources["NoTilesBool"] = notilesbool;
-                        SetLanguageDictionary();
+                        this.Resources["NoTilesBool"] = noTilesBool;
+
+                        key.Close();
                     }
                     else
                     {
-                        // DirectStart had an issue loading the config file or its values, we will use the common defaults instead.
-                        this.Resources["ProfilePictureShape"] = "rounded";
-                        string resourceDictionaryPath = GetResourceDictionaryPath("metro");
-                        if (!string.IsNullOrEmpty(resourceDictionaryPath))
-                        {
-                            // Set the ResourceDictionary for the theme
-                            ResourceDictionary skinDictionary = new ResourceDictionary();
-                            skinDictionary.Source = new Uri(resourceDictionaryPath, UriKind.RelativeOrAbsolute);
-                            Resources.MergedDictionaries.Add(skinDictionary);
-                        }
-                        SetLanguageDictionary();
+                        // Registry key doesn't exist, use defaults
+                        ApplyDefaultSettings();
                     }
                 }
-                catch (Exception ex)
+                catch
                 {
-                    // DirectStart had an issue loading the config file or its values, we will use the common defaults instead.
-                    this.Resources["ProfilePictureShape"] = "rounded";
-                    string resourceDictionaryPath = GetResourceDictionaryPath("metro");
-                    if (!string.IsNullOrEmpty(resourceDictionaryPath))
-                    {
-                        // Set the ResourceDictionary for the theme
-                        ResourceDictionary skinDictionary = new ResourceDictionary();
-                        skinDictionary.Source = new Uri(resourceDictionaryPath, UriKind.RelativeOrAbsolute);
-                        Resources.MergedDictionaries.Add(skinDictionary);
-                    }
-                    SetLanguageDictionary();
+                    ApplyDefaultSettings();
                 }
 
-                // Initialize your main window or any other startup logic
+                SetLanguageDictionary();
+
                 StartMenu mainWindow = new StartMenu();
                 mainWindow.Show();
-            }            
+            }
         }
+        private void ApplyDefaultSettings()
+        {
+            const string registryPath = @"SOFTWARE\DirectStart";
+            using (RegistryKey key = Registry.CurrentUser.CreateSubKey(registryPath))
+            {
+                if (key != null)
+                {
+                    // Set default values if they do not exist
+                    SetRegistryDefault(key, "pfpshape", "rounded");
+                    SetRegistryDefault(key, "forcefillstartbutton", "false");
+                    SetRegistryDefault(key, "retrobarfix", "false");
+                    SetRegistryDefault(key, "disablenotiles", "false");
+                    SetRegistryDefault(key, "theme", "metro");
+
+                    // Set app resources using those values
+                    this.Resources["ProfilePictureShape"] = key.GetValue("pfpshape") as string;
+                    this.Resources["ForceFillStartButton"] = key.GetValue("forcefillstartbutton") as string;
+                    this.Resources["RetroBarFix"] = key.GetValue("retrobarfix") as string;
+                    this.Resources["NoTilesBool"] = key.GetValue("disablenotiles") as string;
+
+                    string theme = key.GetValue("theme") as string;
+                    string resourceDictionaryPath = GetResourceDictionaryPath(theme);
+                    if (!string.IsNullOrEmpty(resourceDictionaryPath))
+                    {
+                        ResourceDictionary skinDictionary = new ResourceDictionary
+                        {
+                            Source = new Uri(resourceDictionaryPath, UriKind.RelativeOrAbsolute)
+                        };
+                        Resources.MergedDictionaries.Add(skinDictionary);
+                    }
+                }
+            }
+        }
+
+        private void SetRegistryDefault(RegistryKey key, string name, string defaultValue)
+        {
+            if (key.GetValue(name) == null)
+            {
+                key.SetValue(name, defaultValue, RegistryValueKind.String);
+            }
+        }
+
 
         private void SetLanguageDictionary()
         {

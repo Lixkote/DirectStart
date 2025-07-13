@@ -1,4 +1,7 @@
-﻿using B8TAM.FrequentHelpers;
+﻿using AFSM;
+using B8TAM.FrequentHelpers;
+using BlurryControls.Controls;
+using IWshRuntimeLibrary;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -8,6 +11,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
+using System.IO.Pipes;
 using System.Linq;
 using System.Management;
 using System.Runtime.InteropServices;
@@ -19,15 +23,18 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Forms;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
-using BlurryControls.Controls;
 using System.Windows.Media.Animation;
-using System.Xml;
-using System.Xml.Serialization;
-using Color = System.Windows.Media.Color;
-using AFSM;
-using System.IO.Pipes;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using System.Xml;
+using System.Xml.Linq;
+using System.Xml.Serialization;
+using static B8TAM.TilesLoader;
+using Color = System.Windows.Media.Color;
+using File = System.IO.File;
+
 
 namespace B8TAM
 {
@@ -51,6 +58,14 @@ namespace B8TAM
         string profilePictureShape;
 		double taskbarheightinpx;
         string noTiles;
+
+        [DllImport("user32.dll", SetLastError = true)]
+        static extern bool ExitWindowsEx(uint uFlags, uint dwReason);
+
+        [DllImport("user32.dll")]
+        static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, int dwExtraInfo);
+        [DllImport("user32.dll")]
+        static extern byte MapVirtualKey(byte wCode, int wMap);
 
         public SolidColorBrush PressedBackground
         {
@@ -183,17 +198,15 @@ namespace B8TAM
 			{
                 UserRounderer.CornerRadius = new CornerRadius(0);
             }
-            // Menu.Width = 273;
-            // StartMenuBackground.Width = 273;
-            if (noTiles == "true")
+            if (TilesHost.Items.Count == 0)
             {
-				Debug.WriteLine("działa");
-                Menu.Width = 267;
-                StartMenuBackground.Width = 267;
+                Debug.WriteLine("(StartMenu.xaml.cs) No pinned tiles were detected or tiles were disabled in registry. Hiding tiles section.");
+                Menu.Width = 273;
+                StartMenuBackground.Width = 273;
             }
         }
 
-		private void DUIColorize()
+        private void DUIColorize()
 		{
             if (IsSkinSupportDuiBackgroundColor.Text == "True" || IsSkinSupportDuiBackgroundColor.Text == "true")
             {
@@ -1046,29 +1059,63 @@ namespace B8TAM
 			OnStartTriggered(sender, e);
         }
 
-        private void ResizeTileSmall_Click(object sender, RoutedEventArgs e)
+        private void TileResizerDynamic(object sender, string sizetoresizeto)
         {
-			var h = sender as System.Windows.Controls.MenuItem;
-			var b = h.DataContext as Tile;
-			b.Size = "Small";
-			TilesHost.ItemsSource = null;
+            var menuItem = sender as System.Windows.Controls.MenuItem;
+            var tile = menuItem?.DataContext as Tile;
+            if (tile == null) return;
+
+            tile.Size = sizetoresizeto; // Update in memory
+
+            // Update XML
+            string configFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "PinnedTilesDS.xml");
+            if (File.Exists(configFile))
+            {
+                try
+                {
+                    XDocument doc = XDocument.Load(configFile);
+
+                    // Find matching Tile node by path
+                    var tileElement = doc.Descendants("Tile")
+                        .FirstOrDefault(x => x.Element("Path")?.Value == tile.Path);
+
+                    if (tileElement != null)
+                    {
+                        tileElement.SetElementValue("Size", sizetoresizeto); // Update or create <Size> element
+                        doc.Save(configFile); // Save changes
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"(ResizeTileSmall_Click) Error updating XML: {ex.Message}");
+                }
+            }
+
+            // Reload UI
+            TilesHost.ItemsSource = null;
             LoadTiles();
             TilesHost.ItemsSource = Tiles;
         }
 
+
+        private void ResizeTileSmall_Click(object sender, RoutedEventArgs e)
+        {
+			TileResizerDynamic(sender, "Small");
+        }
+
         private void ResizeTileNormal_Click(object sender, RoutedEventArgs e)
         {
-
+            TileResizerDynamic(sender, "Normal");
         }
 
         private void ResizeTileWide_Click(object sender, RoutedEventArgs e)
         {
-
+            TileResizerDynamic(sender, "Wide");
         }
 
         private void ResizeTileLarge_Click(object sender, RoutedEventArgs e)
         {
-
+            TileResizerDynamic(sender, "Large");
         }
 
         private void SearchText_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
@@ -1119,22 +1166,217 @@ namespace B8TAM
 
         private void UserImageChangeMenuItem_Click(object sender, RoutedEventArgs e)
         {
-
+            //Explorer.exe shell:AppsFolder\Windows.ImmersiveControlPanel_cw5n1h2txyewy!microsoft.windows.immersivecontrolpanel
         }
 
         private void LockMenuItem_Click(object sender, RoutedEventArgs e)
         {
+            // Define some constants
+            const int KEYEVENTF_EXTENDEDKEY = 0x1;
+            const int KEYEVENTF_KEYUP = 0x2;
+
+            // Get the virtual key codes for Windows and L keys
+            byte winKey = (byte)KeyInterop.VirtualKeyFromKey(Key.LWin);
+            byte lKey = (byte)KeyInterop.VirtualKeyFromKey(Key.L);
+
+            // Press the Windows key
+            keybd_event(winKey, MapVirtualKey(winKey, 0), KEYEVENTF_EXTENDEDKEY, 0);
+
+            // Press the L key
+            keybd_event(lKey, MapVirtualKey(lKey, 0), KEYEVENTF_EXTENDEDKEY, 0);
+
+            // Release the L key
+            keybd_event(lKey, MapVirtualKey(lKey, 0), KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
+
+            // Release the Windows key
+            keybd_event(winKey, MapVirtualKey(winKey, 0), KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
+        }
+
+        const uint EWX_LOGOFF = 0x00000000;
+        private void SignOutMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            // Log off the current user
+            ExitWindowsEx(EWX_LOGOFF, 0);
+        }
+
+        private void UnpinTile_Click(object sender, RoutedEventArgs e)
+        {
+            var menuItem = sender as System.Windows.Controls.MenuItem;
+            var tile = menuItem?.DataContext as Tile;
+            if (tile == null) return;
+
+            string configFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "PinnedTilesDS.xml");
+
+            if (File.Exists(configFile))
+            {
+                try
+                {
+                    XDocument doc = XDocument.Load(configFile);
+
+                    // Find and remove the matching tile node
+                    var tileElement = doc.Descendants("Tile")
+                        .FirstOrDefault(x => x.Element("Path")?.Value == tile.Path);
+
+                    if (tileElement != null)
+                    {
+                        tileElement.Remove();
+                        doc.Save(configFile);
+                        Debug.WriteLine($"(UnpinTile_Click) Tile '{tile.Title}' unpinned and removed from XML.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"(UnpinTile_Click) Error updating XML: {ex.Message}");
+                }
+            }
+
+            // Remove from the in-memory collection
+            Tiles.Remove(tile);
+
+            // Refresh the ItemsControl
+            TilesHost.ItemsSource = null;
+            TilesHost.ItemsSource = Tiles;
+            if (TilesHost.Items.Count == 0)
+            {
+                Debug.WriteLine("(StartMenu.xaml.cs) No pinned tiles were detected. Hiding tiles section.");
+                Menu.Width = 273;
+                StartMenuBackground.Width = 273;
+            }
+        }
+
+        private void TileRunAsAdmin_Click(object sender, RoutedEventArgs e)
+        {
+            var menuItem = sender as System.Windows.Controls.MenuItem;
+            var tile = menuItem?.DataContext as Tile;
+
+            if (tile == null || string.IsNullOrEmpty(tile.Path))
+                return;
+
+            try
+            {
+                this.Hide();
+
+                var startInfo = new ProcessStartInfo
+                {
+                    FileName = tile.Path,
+                    UseShellExecute = true,
+                    Verb = "runas" // This requests elevation
+                };
+
+                Process.Start(startInfo);
+            }
+            catch (System.ComponentModel.Win32Exception ex)
+            {
+            }
+        }
+        private void OpenFileLocationTile_Click(object sender, RoutedEventArgs e)
+        {
+            var menuItem = sender as System.Windows.Controls.MenuItem;
+            var tile = menuItem?.DataContext as Tile;
+            this.Hide();
+            Process.Start("explorer.exe", $"/select, \"{tile.Path}\"");
+        }
+
+        private void PinTaskbarTile_Click(object sender, RoutedEventArgs e)
+        {
+
 
         }
 
-        private void SignOutMenuItem_Click(object sender, RoutedEventArgs e)
-        {
 
+        string GetShortcutTarget(string shortcutPath)
+        {
+            WshShell shell = new WshShell();
+            IWshShortcut shortcut = (IWshShortcut)shell.CreateShortcut(shortcutPath);
+            return shortcut.TargetPath;
+        }
+        private void pinstart_Click(object sender, RoutedEventArgs e)
+        {
+            var menuItem = sender as System.Windows.Controls.MenuItem;
+            var link = menuItem?.DataContext as StartMenuLink;
+            if (link == null || string.IsNullOrWhiteSpace(link.Link)) return;
+
+            string configFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "PinnedTilesDS.xml");
+
+            try
+            {
+                XDocument doc;
+
+                // Load or initialize XML
+                if (File.Exists(configFile))
+                {
+                    doc = XDocument.Load(configFile);
+                }
+                else
+                {
+                    doc = new XDocument(new XElement("Tiles"));
+                }
+
+                // Check if already pinned
+                var alreadyPinned = doc.Descendants("Tile")
+                    .Any(x => x.Element("Path")?.Value == link.Link);
+
+                if (alreadyPinned)
+                {
+                    Debug.WriteLine($"(pinstart_Click) Tile already pinned: {link.Title}");
+                    return;
+                }
+
+                // Create new <Tile> element
+                XElement newTile = new XElement("Tile",
+                    new XElement("Path", link.Link),
+                    new XElement("PathMetro", ""), // Optional for Metro links
+                    new XElement("Size", "Normal"),
+                    new XElement("IsLiveTileEnabled", "false"),
+                    new XElement("TileColor", "default") // or generate dynamically
+                );
+
+                doc.Root.Add(newTile);
+                doc.Save(configFile);
+
+                // Build Tile object to display immediately
+                Tile pinnedTile = new Tile
+                {
+                    Title = System.IO.Path.GetFileNameWithoutExtension(link.Link),
+                    Path = link.Link,
+                    EXEPath = GetShortcutTarget(link.Link),
+                    PathMetro = "",
+                    Size = "Normal",
+                    Icon = ExtractArbitrarySizeIcon(GetShortcutTarget(link.Link), 2),
+                    IsLiveTileEnabled = false,
+                    LeftGradient = TileColorCalculator.CalculateLeftGradient(
+                        IconHelper.GetLargeFileIcon(link.Link),
+                        link.Title, "default"),
+                    RightGradient = TileColorCalculator.CalculateRightGradient(
+                        IconHelper.GetLargeFileIcon(link.Link),
+                        link.Title, "default"),
+                    Border = TileColorCalculator.CalculateBorder(
+                        IconHelper.GetLargeFileIcon(link.Link),
+                        link.Title, "default")
+                };
+
+                // Add to tiles list and refresh UI
+                Tiles.Add(pinnedTile);
+                TilesHost.ItemsSource = null;
+                TilesHost.ItemsSource = Tiles;
+
+                Debug.WriteLine($"(pinstart_Click) Pinned new tile: {pinnedTile.Title}");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"(pinstart_Click) Error pinning tile: {ex.Message}");
+            }
+            if (TilesHost.Items.Count > 0)
+            {
+                Debug.WriteLine("(StartMenu.xaml.cs) A tile was pinned. Unhiding tiles section.");
+                Menu.Width = 533;
+                StartMenuBackground.Width = 533;
+            }
         }
     }
 
     public class RunCommand : ICommand
-	{
+	    {
 		public delegate void ExecuteMethod();
 		private Action<string> func;
 		public RunCommand(Action<string> exec)

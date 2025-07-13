@@ -113,7 +113,7 @@ namespace B8TAM {
             }
             catch
             {
-                System.Windows.MessageBox.Show("Ensure you have permissions to access WindowsApps folder", "We couldn't load metro apps support");
+                // System.Windows.MessageBox.Show("Ensure you have permissions to access WindowsApps folder", "We couldn't load metro apps support");
                 List<MetroApp> emptylist = new List<MetroApp>();
                 return emptylist;
             }

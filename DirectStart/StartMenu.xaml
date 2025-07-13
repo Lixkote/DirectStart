@@ -84,10 +84,10 @@
                         <local:TileControl x:Name="TileC" Click="Tile_Click" Size="{Binding Size}" Style="{DynamicResource ColoredTile}" Icon="{Binding Icon}" Title="{Binding Title}" FontSize="6" HorizontalAlignment="Left" Margin="3,5,5,3" Width="NaN" Height="NaN" VerticalAlignment="Top">
                             <local:TileControl.ContextMenu>
                                 <ContextMenu>
-                                    <MenuItem x:Name="UnpinTile" Header="Unpin from Start"></MenuItem>
-                                    <MenuItem Header="Pin to taskbar"></MenuItem>
-                                    <MenuItem Header="Run as administrator"></MenuItem>
-                                    <MenuItem Header="Open file location"></MenuItem>
+                                    <MenuItem Click="UnpinTile_Click" x:Name="UnpinTile" Header="Unpin from Start"></MenuItem>
+                                    <MenuItem Click="PinTaskbarTile_Click" Visibility="Collapsed" x:Name="PinTaskbarTile" Header="Pin to taskbar"></MenuItem>
+                                    <MenuItem Click="TileRunAsAdmin_Click"  x:Name="TileRunAsAdmin" Header="Run as administrator"></MenuItem>
+                                    <MenuItem Click="OpenFileLocationTile_Click" x:Name="OpenFileLocationTile" Header="Open file location"></MenuItem>
                                     <MenuItem Header="Resize">
                                         <MenuItem Click="ResizeTileSmall_Click" x:Name="ResizeTileSmall" Header="Small"></MenuItem>
                                         <MenuItem Click="ResizeTileNormal_Click" x:Name="ResizeTileNormal" Header="Normal"></MenuItem>
@@ -110,6 +110,7 @@
                                         <StackPanel HorizontalAlignment="Stretch" Background="Transparent">                                            
                                             <StackPanel.ContextMenu>
                                                 <ContextMenu>
+                                                    <MenuItem x:Name="pinstart" Header="Pin to the start menu" Click="pinstart_Click"/>
                                                     <MenuItem Header="Open" Click="Link_Click"/>
                                                     <MenuItem Header="Open file location..." Click="BrowseLink_Click"/>
                                                 </ContextMenu>
@@ -167,6 +168,7 @@
                                         <StackPanel HorizontalAlignment="Stretch" Background="Transparent">
                                             <StackPanel.ContextMenu>
                                                 <ContextMenu>
+ 
                                                     <MenuItem Header="Open" Click="Link_Click"/>
                                                     <MenuItem Header="Open file location..." Click="BrowseLink_Click"/>
                                                 </ContextMenu>
@@ -241,6 +243,7 @@
                                     <StackPanel Orientation="Horizontal" Height="40" MouseEnter="Item_MouseEnter" MouseLeave="Item_MouseLeave" OverridesDefaultStyle="False" MouseLeftButtonUp="Link_Click">
                                         <StackPanel.ContextMenu>
                                             <ContextMenu>
+                                                <MenuItem x:Name="pinstart" Header="Pin to the start menu" Click="pinstart_Click"/>
                                                 <MenuItem Header="Open" Click="Link_Click"/>
                                                 <MenuItem Header="Open file location..." Click="BrowseLink_Click"/>
                                             </ContextMenu>

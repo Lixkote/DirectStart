@@ -85,8 +85,7 @@ namespace B8TAM
             }
             return null; // Failure
         }
-
-        private string GetShortcutTarget(string shortcutPath)
+        string GetShortcutTarget(string shortcutPath)
         {
             WshShell shell = new WshShell();
             IWshShortcut shortcut = (IWshShortcut)shell.CreateShortcut(shortcutPath);
@@ -102,44 +101,59 @@ namespace B8TAM
         }
         public void LoadTileGroups(ObservableCollection<Tile> tilesCollection)
         {
-            string configFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "DirectStart", "Tiles", "Layout.xml");
+            string configFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "PinnedTilesDS.xml");
 
-            if (File.Exists(configFile))
+            if (!File.Exists(configFile))
             {
-                try
-                {
-                    XDocument doc = XDocument.Load(configFile);
+                Debug.WriteLine("(TilesLoader) PinnedTilesDS.xml not found. Creating a new one.");
+                CreateEmptyPinnedTilesDS(configFile);
+                return;
+            }
 
-                    foreach (XElement tileElement in doc.Descendants("Tile"))
+            try
+            {
+                XDocument doc = XDocument.Load(configFile);
+
+                foreach (XElement tileElement in doc.Descendants("Tile"))
+                {
+                    Tile tile = new Tile
                     {
-                        Tile tile = new Tile
-                        {
-                            Title = Path.GetFileNameWithoutExtension(tileElement.Element("Path")?.Value),
-                            Path = tileElement.Element("Path")?.Value,
-                            EXEPath = GetShortcutTarget(tileElement.Element("Path")?.Value),
-                            PathMetro = tileElement.Element("PathMetro")?.Value,
-                            Size = tileElement.Element("Size")?.Value,
-                            Icon = ExtractArbitrarySizeIcon(GetShortcutTarget(tileElement.Element("Path")?.Value), 2),
-                            // Icon = IconHelper.GetTileIcon((tileElement.Element("Path")?.Value)),
-                            IsLiveTileEnabled = bool.Parse(tileElement.Element("IsLiveTileEnabled")?.Value ?? "false"),
-                            LeftGradient = TileColorCalculator.CalculateLeftGradient(IconHelper.GetLargeFileIcon(tileElement.Element("Path")?.Value), Path.GetFileNameWithoutExtension(tileElement.Element("Path")?.Value), tileElement.Element("TileColor")?.Value),
-                            RightGradient = TileColorCalculator.CalculateRightGradient(IconHelper.GetLargeFileIcon(tileElement.Element("Path")?.Value), Path.GetFileNameWithoutExtension(tileElement.Element("Path")?.Value), tileElement.Element("TileColor")?.Value),
-                            Border = TileColorCalculator.CalculateBorder(IconHelper.GetLargeFileIcon(tileElement.Element("Path")?.Value), Path.GetFileNameWithoutExtension(tileElement.Element("Path")?.Value), tileElement.Element("TileColor")?.Value),
-                        };
+                        Title = Path.GetFileNameWithoutExtension(tileElement.Element("Path")?.Value),
+                        Path = tileElement.Element("Path")?.Value,
+                        EXEPath = GetShortcutTarget(tileElement.Element("Path")?.Value),
+                        PathMetro = tileElement.Element("PathMetro")?.Value,
+                        Size = tileElement.Element("Size")?.Value,
+                        Icon = ExtractArbitrarySizeIcon(GetShortcutTarget(tileElement.Element("Path")?.Value), 2),
+                        IsLiveTileEnabled = bool.Parse(tileElement.Element("IsLiveTileEnabled")?.Value ?? "false"),
+                        LeftGradient = TileColorCalculator.CalculateLeftGradient(IconHelper.GetLargeFileIcon(tileElement.Element("Path")?.Value), Path.GetFileNameWithoutExtension(tileElement.Element("Path")?.Value), tileElement.Element("TileColor")?.Value),
+                        RightGradient = TileColorCalculator.CalculateRightGradient(IconHelper.GetLargeFileIcon(tileElement.Element("Path")?.Value), Path.GetFileNameWithoutExtension(tileElement.Element("Path")?.Value), tileElement.Element("TileColor")?.Value),
+                        Border = TileColorCalculator.CalculateBorder(IconHelper.GetLargeFileIcon(tileElement.Element("Path")?.Value), Path.GetFileNameWithoutExtension(tileElement.Element("Path")?.Value), tileElement.Element("TileColor")?.Value),
+                    };
 
-                        tilesCollection.Add(tile);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("Error loading tiles Layout xml file " + ex.Message);
+                    tilesCollection.Add(tile);
                 }
             }
-            else
+            catch (Exception ex)
             {
-                Debug.WriteLine("Tiles layout xml file not found.");
+                Debug.WriteLine("(TilesLoader) PinnedTilesDS.xml load error: " + ex.Message);
+                Debug.WriteLine("(TilesLoader) Recreating empty PinnedTilesDS.xml...");
+                CreateEmptyPinnedTilesDS(configFile);
             }
         }
+
+        private void CreateEmptyPinnedTilesDS(string filePath)
+        {
+            try
+            {
+                XDocument emptyDoc = new XDocument(new XElement("Tiles"));
+                emptyDoc.Save(filePath);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("(TilesLoader) Failed to create default PinnedTilesDS.xml: " + ex.Message);
+            }
+        }
+
 
         private string GetFileLabel(string filePath)
         {
@@ -158,7 +172,7 @@ namespace B8TAM
                 // Handle other file types if needed
             }
 
-            return "File not found or unsupported type";
+            return "(TilesLoader) File not found or unsupported type";
         }
 
         private string GetShortcutLabel(string shortcutPath)
@@ -171,7 +185,7 @@ namespace B8TAM
             }
             catch (Exception ex)
             {
-                return $"Error getting shortcut label: {ex.Message}";
+                return $"(TilesLoader) Error getting shortcut label: {ex.Message}";
             }
         }
 
@@ -183,7 +197,7 @@ namespace B8TAM
             }
             catch (Exception ex)
             {
-                return $"Error getting executable label: {ex.Message}";
+                return $"(TilesLoader) Error getting executable label: {ex.Message}";
             }
         }
     }
