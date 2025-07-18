@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "DirectStart"
-#define MyAppVersion "2.0"
+#define MyAppVersion "2.1"
 #define MyAppPublisher "lixkote - lkt27"
 #define MyAppURL "https://github.com/lkt27/DirectStart"
 
@@ -24,7 +24,7 @@ LicenseFile=.\license.txt
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
 OutputDir=..\InstallerBin
-OutputBaseFilename=windows8.1-directstart-amd64_setup
+OutputBaseFilename=InstallDirectStart2.1
 SetupIconFile=.\install.ico
 Compression=lzma
 SolidCompression=yes
@@ -41,5 +41,5 @@ Source: "..\MenuShortcuts\*"; DestDir: "{userappdata}\Microsoft\Internet Explore
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-Name: "{commondesktop}\Launch DirectStart"; Filename: "{autopf}\{#MyAppName}\DirectStart.exe"; 
+Name: "{commondesktop}\Launch DirectStart 2.1"; Filename: "{autopf}\{#MyAppName}\DirectStart.exe"; 
 
