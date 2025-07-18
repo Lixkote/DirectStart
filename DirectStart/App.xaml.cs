@@ -165,7 +165,7 @@ namespace AFSM
                     dict.Source = new Uri("..\\MultiLang\\StringResources.xaml", UriKind.Relative);
                     break;
                 case "pl-PL":
-                    dict.Source = new Uri("..\\MultiLang\\StringResources.pl-PL.xaml", UriKind.Relative);
+                    dict.Source = new Uri("..\\MultiLang\\StringResources.xaml", UriKind.Relative);
                     break;
                 default:
                     dict.Source = new Uri("..\\MultiLang\\StringResources.xaml", UriKind.Relative);

@@ -7,12 +7,12 @@ using System.Windows;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("B8taMenu")]
-[assembly: AssemblyDescription("DV2ControlHost")]
+[assembly: AssemblyTitle("DirectStart")]
+[assembly: AssemblyDescription("DUI Start menu recreation")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("")]
-[assembly: AssemblyCopyright("Copyright Lixkote © 2023")]
+[assembly: AssemblyCopyright("Copyright lkt27 © 2025")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
